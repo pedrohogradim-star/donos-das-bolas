@@ -16,13 +16,16 @@ body{font-family:'Oswald',sans-serif;color:#ccc}
 .header{text-align:center;padding:1.4rem 1rem .9rem;border-bottom:1px solid #8B6914}
 .header h1{font-size:clamp(20px,5vw,28px);font-weight:700;letter-spacing:3px;text-transform:uppercase;background:linear-gradient(135deg,#FFD700,#FFA500,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .header p{font-size:10px;letter-spacing:2px;color:#8B6914;margin-top:4px;text-transform:uppercase}
+.header-admin{font-size:11px;color:#4caf50;letter-spacing:1px;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px}
 .tabs{display:flex;border-bottom:1px solid #8B6914;position:sticky;top:0;z-index:100;background:#0a0a0a}
-.tab{flex:1;padding:12px 4px;font-size:11px;font-family:'Oswald',sans-serif;font-weight:500;letter-spacing:1px;text-transform:uppercase;background:transparent;border:none;cursor:pointer;color:#666;transition:all .2s;white-space:nowrap}
+.tab{flex:1;padding:11px 2px;font-size:10px;font-family:'Oswald',sans-serif;font-weight:500;letter-spacing:.5px;text-transform:uppercase;background:transparent;border:none;cursor:pointer;color:#666;transition:all .2s;white-space:nowrap}
 .tab.active{color:#FFD700;border-bottom:2px solid #FFD700}
 .section{display:none;padding:.9rem}.section.active{display:block}
 .btn-green{background:#0d3b1a;color:#4caf50;border:1px solid #4caf50;font-weight:600;width:100%;padding:13px;margin-top:8px;font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:1px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:all .2s}
 .btn-green:hover:not(:disabled){background:#4caf50;color:#000}
 .btn-green:disabled{opacity:.4;cursor:not-allowed}
+.btn-red{background:#3b0d0d;color:#f44336;border:1px solid #f44336;font-weight:600;width:100%;padding:11px;margin-top:6px;font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:all .2s}
+.btn-red:hover{background:#f44336;color:#fff}
 .rtab{padding:7px 12px;font-size:11px;font-family:'Oswald',sans-serif;font-weight:500;letter-spacing:1px;text-transform:uppercase;border:1px solid #444;border-radius:4px;background:transparent;cursor:pointer;color:#666;transition:all .2s}
 .rtab.active{border-color:#FFD700;color:#FFD700;background:#1a1500}
 .rtab:disabled{opacity:.3;cursor:not-allowed}
@@ -75,6 +78,37 @@ body{font-family:'Oswald',sans-serif;color:#ccc}
 .loading-screen p{color:#8B6914;font-size:13px;letter-spacing:2px;text-transform:uppercase}
 .spinner{width:36px;height:36px;border:2px solid #2a2a2a;border-top-color:#FFD700;border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* Login modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem}
+.modal-box{background:#111;border:1px solid #8B6914;border-radius:8px;padding:1.5rem;width:100%;max-width:340px}
+.modal-box h2{font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#FFD700;margin-bottom:4px}
+.modal-box p{font-size:11px;color:#666;letter-spacing:1px;margin-bottom:1.2rem}
+.modal-box select,.modal-box input{width:100%;background:#0a0a0a;border:1px solid #444;color:#ccc;font-family:'Oswald',sans-serif;font-size:14px;padding:10px 12px;border-radius:4px;margin-bottom:10px;appearance:none}
+.modal-box select:focus,.modal-box input:focus{outline:none;border-color:#8B6914}
+.modal-btn{width:100%;padding:12px;background:linear-gradient(135deg,#8B6914,#FFD700);color:#000;font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border:none;border-radius:4px;cursor:pointer;margin-top:4px}
+.modal-cancel{width:100%;padding:10px;background:transparent;color:#555;font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;border:1px solid #333;border-radius:4px;cursor:pointer;margin-top:6px}
+.modal-err{color:#f44336;font-size:11px;letter-spacing:.5px;margin-bottom:8px;display:none}
+
+/* Records */
+.rec-card{background:#111;border:1px solid #2a2a2a;border-radius:6px;padding:1rem 1.1rem;margin-bottom:.75rem}
+.rec-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8B6914;margin-bottom:.75rem;font-weight:600}
+.rec-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a1a1a}
+.rec-row:last-child{border-bottom:none}
+.rec-name{font-size:14px;font-weight:600;color:#ccc}
+.rec-detail{font-size:12px;color:#666;margin-top:2px}
+.rec-pct{font-size:20px;font-weight:700}
+.rec-pct.high{color:#4caf50}
+.rec-pct.mid{color:#FFD700}
+.rec-pct.low{color:#f44336}
+.bar-bg{height:5px;background:#1a1a1a;border-radius:3px;margin-top:6px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .6s}
+.bar-fill.high{background:#4caf50}
+.bar-fill.mid{background:#FFD700}
+.bar-fill.low{background:#f44336}
+.rec-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:.5px}
+.rec-badge-gold{background:#1a1500;border:1px solid #FFD700;color:#FFD700}
+.rec-badge-red{background:#3b0d0d;border:1px solid #f44336;color:#f44336}
 </style>
 </head>
 <body>
@@ -84,21 +118,54 @@ body{font-family:'Oswald',sans-serif;color:#ccc}
   <div class="spinner"></div>
 </div>
 
+<!-- Login Modal -->
+<div class="modal-overlay" id="login-modal" style="display:none">
+  <div class="modal-box">
+    <h2>Área Restrita</h2>
+    <p>Apenas administradores podem acessar esta área.</p>
+    <div class="modal-err" id="login-err">Senha incorreta.</div>
+    <select id="login-user">
+      <option value="">Selecione seu nome</option>
+      <option value="Pedro">Pedro</option>
+      <option value="Rosalves">Rosalves</option>
+    </select>
+    <input type="password" id="login-pass" placeholder="Senha" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="modal-btn" onclick="doLogin()">Entrar</button>
+    <button class="modal-cancel" onclick="closeLoginModal()">Cancelar</button>
+  </div>
+</div>
+
+<!-- Reset Confirm Modal -->
+<div class="modal-overlay" id="reset-modal" style="display:none">
+  <div class="modal-box">
+    <h2>⚠️ Resetar Rodada</h2>
+    <p id="reset-msg">Isso vai apagar todos os resultados desta rodada e reabrir os palpites. Tem certeza?</p>
+    <button class="modal-btn" style="background:linear-gradient(135deg,#7b1111,#f44336);color:#fff" onclick="confirmReset()">Sim, resetar</button>
+    <button class="modal-cancel" onclick="document.getElementById('reset-modal').style.display='none'">Cancelar</button>
+  </div>
+</div>
+
 <div class="app" id="app" style="display:none">
   <div class="wm">🏆</div>
   <div class="inner">
     <div class="header">
       <h1>Os Donos das Bolas</h1>
       <p>Bolão Copa do Mundo 2026</p>
+      <div class="header-admin" id="admin-bar" style="display:none">
+        <span>🔑 Admin: <span id="admin-name-display"></span></span>
+        <button onclick="logout()" style="background:none;border:1px solid #4caf50;color:#4caf50;font-family:'Oswald',sans-serif;font-size:10px;padding:2px 8px;border-radius:3px;cursor:pointer;letter-spacing:1px">SAIR</button>
+      </div>
     </div>
     <div class="tabs">
       <button class="tab active" onclick="showTab('palpites')">⚽ Palpites</button>
       <button class="tab" onclick="showTab('resultados')">✓ Resultados</button>
       <button class="tab" onclick="showTab('rank')">🏆 Ranking</button>
+      <button class="tab" onclick="showTab('recordes')">⭐ Recordes</button>
     </div>
     <div id="tab-palpites" class="section active"></div>
     <div id="tab-resultados" class="section"></div>
     <div id="tab-rank" class="section"></div>
+    <div id="tab-recordes" class="section"></div>
   </div>
 </div>
 
@@ -122,6 +189,9 @@ const FLAGS={
   "Repescagem D":"🏳","Repescagem 1":"🏳","Repescagem 2":"🏳"
 };
 function F(t){return FLAGS[t]||'🏳';}
+
+// Senhas dos admins (simples, suficiente para bolão entre amigos)
+const ADMIN_PASSWORDS={Pedro:"pedro123",Rosalves:"rosalves123"};
 
 const PARTICIPANTS=["Pedro","Neto","Xavier","Macleiton","João Victor","Rosalves","Alexandre","Filipi","Matheus","Arruda","PH","Luís Eduardo","Luís Felipe","Elicom","João Antônio","Caio"];
 
@@ -206,58 +276,87 @@ const ROUNDS=[
 ]}
 ];
 
-// ── Firebase config ──────────────────────────────────────────────────────────
-// SUBSTITUA pelos seus dados do Firebase (veja instruções abaixo)
-const FIREBASE_URL = "https://donos-das-bolas-default-rtdb.firebaseio.com";
-const DB_KEY = "bolao_donos_v1";
+const FIREBASE_URL="https://donos-das-bolas-default-rtdb.firebaseio.com";
+const DB_KEY="bolao_donos_v1";
 
 let state={votes:{},results:{},closed:{r1:false,r2:false,r3:false},unlocked:{r1:true,r2:false,r3:false}};
 let loaded=false;
+let adminUser=null; // null = não logado
+let pendingResetRid=null;
 
+// ── Auth ─────────────────────────────────────────────────────────────────────
+function isAdmin(){return adminUser!==null;}
+function showLoginModal(onSuccess){
+  window._loginCallback=onSuccess||null;
+  document.getElementById('login-modal').style.display='flex';
+  document.getElementById('login-err').style.display='none';
+  document.getElementById('login-pass').value='';
+}
+function closeLoginModal(){
+  document.getElementById('login-modal').style.display='none';
+}
+function doLogin(){
+  const u=document.getElementById('login-user').value;
+  const p=document.getElementById('login-pass').value;
+  if(!u){document.getElementById('login-err').textContent='Selecione seu nome.';document.getElementById('login-err').style.display='block';return;}
+  if(ADMIN_PASSWORDS[u]===p){
+    adminUser=u;
+    document.getElementById('login-modal').style.display='none';
+    document.getElementById('admin-bar').style.display='flex';
+    document.getElementById('admin-name-display').textContent=u;
+    if(window._loginCallback)window._loginCallback();
+    renderCurrent();
+  } else {
+    document.getElementById('login-err').textContent='Senha incorreta.';
+    document.getElementById('login-err').style.display='block';
+  }
+}
+function logout(){
+  adminUser=null;
+  document.getElementById('admin-bar').style.display='none';
+  renderCurrent();
+}
+
+// ── Firebase ──────────────────────────────────────────────────────────────────
 async function loadState(){
   try{
     const res=await fetch(`${FIREBASE_URL}/${DB_KEY}.json`);
-    if(res.ok){
-      const d=await res.json();
-      if(d)state=Object.assign({votes:{},results:{},closed:{r1:false,r2:false,r3:false},unlocked:{r1:true,r2:false,r3:false}},d);
-    }
-  }catch(e){console.warn('Firebase indisponível, usando local',e);}
+    if(res.ok){const d=await res.json();if(d)state=Object.assign({votes:{},results:{},closed:{r1:false,r2:false,r3:false},unlocked:{r1:true,r2:false,r3:false}},d);}
+  }catch(e){console.warn('Firebase indisponível',e);}
   loaded=true;
   document.getElementById('loading').style.display='none';
   document.getElementById('app').style.display='block';
   renderCurrent();
 }
-
 let saveTimer=null;
 async function save(){
   clearTimeout(saveTimer);
   saveTimer=setTimeout(async()=>{
     try{
       await fetch(`${FIREBASE_URL}/${DB_KEY}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(state)});
-      const t=document.getElementById('saving-toast');
-      t.classList.add('show');
-      setTimeout(()=>t.classList.remove('show'),1600);
+      const t=document.getElementById('saving-toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600);
     }catch(e){console.warn('Erro ao salvar',e);}
   },500);
 }
 
-let activeP=null,showingPList=true,activePTab='r1',activeResTab='r1',activeRankTab='all',currentTab='palpites';
-
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+let activeP=null,showingPList=true,activePTab='r1',activeResTab='r1',activeRankTab='all',activeRecTab='all',currentTab='palpites';
 function renderCurrent(){
   if(currentTab==='palpites')renderPalpites();
   else if(currentTab==='resultados')renderResultados();
-  else renderRank();
+  else if(currentTab==='rank')renderRank();
+  else renderRecordes();
 }
-
 function showTab(t){
   currentTab=t;
-  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['palpites','resultados','rank'][i]===t));
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['palpites','resultados','rank','recordes'][i]===t));
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById('tab-'+t).classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
   renderCurrent();
 }
 
+// ── Palpites ──────────────────────────────────────────────────────────────────
 function renderPalpites(){
   const c=document.getElementById('tab-palpites');
   if(!loaded){c.innerHTML='<div class="empty">Carregando...</div>';return;}
@@ -286,14 +385,12 @@ function renderPalpites(){
     renderPalpiteForm(c);
   }
 }
-
 function selectP(p){
   activeP=p;showingPList=false;
   const open=ROUNDS.find(r=>state.unlocked[r.id]&&!state.closed[r.id]);
   activePTab=open?open.id:(ROUNDS.find(r=>state.unlocked[r.id])||ROUNDS[0]).id;
   renderPalpites();
 }
-
 function renderPalpiteForm(c){
   const r=ROUNDS.find(x=>x.id===activePTab)||ROUNDS[0];
   const locked=state.closed[r.id];
@@ -301,20 +398,17 @@ function renderPalpiteForm(c){
   if(!state.votes[r.id][activeP])state.votes[r.id][activeP]={};
   const pv=state.votes[r.id][activeP];
   const done=r.games.filter(g=>pv[g.id]).length;
-
   let html=`<button class="back-btn" onclick="goBack()">← Voltar</button>`;
   html+=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
     <div class="pname-display">${activeP}</div>
     <span class="pill ${done===r.games.length?'pill-ok':'pill-no'}">${done}/${r.games.length}</span>
   </div>`;
-
   const roundBtns=ROUNDS.map(r2=>{
     const ul=state.unlocked[r2.id],cl=state.closed[r2.id];
     return `<button class="rtab${activePTab===r2.id?' active':''}" onclick="selectPTab('${r2.id}')" ${!ul?'disabled':''}>${r2.name}${cl?' 🔒':''}</button>`;
   }).join('');
   html+=`<div class="round-tab-row">${roundBtns}</div>`;
   if(locked)html+=`<div class="locked-notice">🔒 Rodada encerrada — palpites bloqueados.</div>`;
-
   r.games.forEach(g=>{
     const sel=pv[g.id]||'';
     const res=state.results[r.id]&&state.results[r.id][g.id];
@@ -333,20 +427,17 @@ function renderPalpiteForm(c){
       <div class="game-meta">${g.time} · Grupo ${g.group}</div>
       <div class="vote-row">
         <button class="${bc('home')}" ${dis} onclick="setVote('${r.id}','${g.id}','home')">
-          <span class="fl">${F(g.home)}</span>
-          <span class="tn">${g.home}</span>
+          <span class="fl">${F(g.home)}</span><span class="tn">${g.home}</span>
         </button>
         <button class="${bc('draw')}" ${dis} onclick="setVote('${r.id}','${g.id}','draw')">EMP</button>
         <button class="${bc('away')}" ${dis} onclick="setVote('${r.id}','${g.id}','away')">
-          <span class="fl">${F(g.away)}</span>
-          <span class="tn">${g.away}</span>
+          <span class="fl">${F(g.away)}</span><span class="tn">${g.away}</span>
         </button>
       </div>
     </div>`;
   });
   c.innerHTML=html;
 }
-
 function goBack(){showingPList=true;activeP=null;renderPalpites();}
 function selectPTab(rid){activePTab=rid;renderPalpites();}
 function setVote(rid,gid,val){
@@ -357,14 +448,52 @@ function setVote(rid,gid,val){
   save();renderPalpites();
 }
 
+// ── Resultados ────────────────────────────────────────────────────────────────
 function renderResultados(){
   const c=document.getElementById('tab-resultados');
   if(!loaded){c.innerHTML='<div class="empty">Carregando...</div>';return;}
+
+  if(!isAdmin()){
+    // Modo visualização para não-admins
+    const roundBtns=ROUNDS.map(r=>`<button class="rtab${activeResTab===r.id?' active':''}" onclick="selResTab('${r.id}')">${r.name}</button>`).join('');
+    c.innerHTML=`
+      <div style="background:#1a1000;border:1px solid #8B6914;border-radius:6px;padding:10px 14px;font-size:12px;color:#8B6914;margin-bottom:10px;letter-spacing:.5px">
+        🔒 Apenas Pedro e Rosalves podem lançar resultados.
+        <button onclick="showLoginModal(()=>showTab('resultados'))" style="margin-left:10px;background:none;border:1px solid #8B6914;color:#FFD700;font-family:'Oswald',sans-serif;font-size:11px;padding:3px 10px;border-radius:3px;cursor:pointer;letter-spacing:1px">ENTRAR</button>
+      </div>
+      <div class="round-tab-row">${roundBtns}</div>
+      <div id="res-body"></div>`;
+    renderResBodyView();
+    return;
+  }
+
   const roundBtns=ROUNDS.map(r=>`<button class="rtab${activeResTab===r.id?' active':''}" onclick="selResTab('${r.id}')">${r.name}</button>`).join('');
   c.innerHTML=`<div class="round-tab-row">${roundBtns}</div><div id="res-body"></div>`;
   renderResBody();
 }
 function selResTab(rid){activeResTab=rid;renderResultados();}
+
+function renderResBodyView(){
+  // Só leitura para visitantes
+  const c=document.getElementById('res-body');if(!c)return;
+  const r=ROUNDS.find(x=>x.id===activeResTab);
+  const rr=(state.results[r.id])||{};
+  let html='';
+  r.games.forEach(g=>{
+    const sel=rr[g.id]||'';
+    html+=`<div class="game-block">
+      <div class="game-meta">${g.time} · Grupo ${g.group}</div>
+      <div style="font-size:13px;font-weight:600;color:#eee;margin-bottom:8px">${F(g.home)} ${g.home} vs ${g.away} ${F(g.away)}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="result-btn${sel==='home'?' sel':''}" disabled>${F(g.home)} ${g.home}</button>
+        <button class="result-btn${sel==='draw'?' sel':''}" disabled>Empate</button>
+        <button class="result-btn${sel==='away'?' sel':''}" disabled>${F(g.away)} ${g.away}</button>
+      </div>
+    </div>`;
+  });
+  if(!Object.keys(rr).length)html=`<div class="empty">Nenhum resultado lançado ainda.</div>`;
+  c.innerHTML=html;
+}
 
 function renderResBody(){
   const c=document.getElementById('res-body');if(!c)return;
@@ -389,6 +518,8 @@ function renderResBody(){
   if(!locked){
     html+=`<button class="btn-green" ${!allFilled?'disabled':''} onclick="closeRound('${r.id}')">▶ Gerar Resultado — ${r.name}</button>`;
     if(!allFilled)html+=`<p style="font-size:11px;color:#555;text-align:center;margin-top:6px">Preencha todos os resultados para gerar.</p>`;
+  } else {
+    html+=`<button class="btn-red" onclick="askReset('${r.id}')">⚠️ Resetar ${r.name} (corrigir erros)</button>`;
   }
   c.innerHTML=html;
 }
@@ -403,7 +534,27 @@ function closeRound(rid){
   if(idx+1<ROUNDS.length)state.unlocked[ROUNDS[idx+1].id]=true;
   save();renderResultados();showTab('rank');
 }
+function askReset(rid){
+  pendingResetRid=rid;
+  const rname=ROUNDS.find(r=>r.id===rid).name;
+  document.getElementById('reset-msg').textContent=`Isso vai apagar todos os resultados da ${rname} e reabrir os palpites. Tem certeza?`;
+  document.getElementById('reset-modal').style.display='flex';
+}
+function confirmReset(){
+  if(!pendingResetRid)return;
+  const rid=pendingResetRid;
+  state.results[rid]={};
+  state.closed[rid]=false;
+  // Bloqueia rodadas seguintes novamente
+  const idx=ROUNDS.findIndex(r=>r.id===rid);
+  for(let i=idx+1;i<ROUNDS.length;i++)state.unlocked[ROUNDS[i].id]=false;
+  document.getElementById('reset-modal').style.display='none';
+  pendingResetRid=null;
+  save();
+  renderResultados();
+}
 
+// ── Scores ────────────────────────────────────────────────────────────────────
 function computeScores(){
   const sc={};
   PARTICIPANTS.forEach(p=>sc[p]={total:0,byRound:{}});
@@ -419,6 +570,7 @@ function computeScores(){
   return sc;
 }
 
+// ── Ranking ───────────────────────────────────────────────────────────────────
 function renderRank(){
   const c=document.getElementById('tab-rank');
   if(!loaded){c.innerHTML='<div class="empty">Carregando...</div>';return;}
@@ -440,19 +592,129 @@ function renderRank(){
     <div class="smet"><div class="smet-val">${avg}</div><div class="smet-lbl">média</div></div>
   </div>`;
   const medals=['m1','m2','m3'];
+  const n=sorted.length;
+  const bottomStart=n-4; // últimos 4 em vermelho
   html+=`<div class="card-wrap"><table class="rank-table"><thead><tr><th style="width:36px">#</th><th>Nome</th>`;
   if(activeRankTab==='all')closedRounds.forEach(r=>{html+=`<th style="width:60px;text-align:right;font-size:9px">${r.name}</th>`;});
   html+=`<th style="width:50px;text-align:right">Pts</th></tr></thead><tbody>`;
   sorted.forEach((s,i)=>{
-    const pos=i<3?`<span class="medal ${medals[i]}">${i+1}</span>`:`<span style="color:#555;font-weight:600">${i+1}</span>`;
-    html+=`<tr><td>${pos}</td><td style="font-weight:${i<3?'700':'500'};color:${i===0?'#FFD700':i===1?'#aaa':i===2?'#cd7f32':'#ccc'}">${s.name}</td>`;
+    const pos=i<3?`<span class="medal ${medals[i]}">${i+1}</span>`:`<span style="color:${i>=bottomStart?'#f44336':'#555'};font-weight:600">${i+1}</span>`;
+    let nameColor=i===0?'#FFD700':i===1?'#aaa':i===2?'#cd7f32':i>=bottomStart?'#f44336':'#ccc';
+    let rowStyle=i>=bottomStart?'background:#1a0000;':''
+    html+=`<tr style="${rowStyle}"><td>${pos}</td><td style="font-weight:${i<3||i>=bottomStart?'700':'500'};color:${nameColor}">${s.name}${i>=bottomStart?' 📉':''}</td>`;
     if(activeRankTab==='all')closedRounds.forEach(r=>{html+=`<td style="text-align:right;color:#666">${scores[s.name].byRound[r.id]||0}</td>`;});
-    html+=`<td style="text-align:right"><span class="pts">${s.pts}</span></td></tr>`;
+    html+=`<td style="text-align:right"><span class="pts" style="${i>=bottomStart?'border-color:#f44336;color:#f44336;background:#3b0d0d':''}">${s.pts}</span></td></tr>`;
   });
   html+=`</tbody></table></div>`;
   c.innerHTML=html;
 }
 function selRankTab(rid){activeRankTab=rid;renderRank();}
+
+// ── Recordes ──────────────────────────────────────────────────────────────────
+function renderRecordes(){
+  const c=document.getElementById('tab-recordes');
+  if(!loaded){c.innerHTML='<div class="empty">Carregando...</div>';return;}
+  const closedRounds=ROUNDS.filter(r=>state.closed[r.id]);
+  const scores=computeScores();
+
+  const tabBtns=[`<button class="rtab${activeRecTab==='all'?' active':''}" onclick="selRecTab('all')">Geral</button>`]
+    .concat(closedRounds.map(r=>`<button class="rtab${activeRecTab===r.id?' active':''}" onclick="selRecTab('${r.id}')">${r.name}</button>`))
+    .join('');
+
+  let html=`<div class="round-tab-row">${tabBtns}</div>`;
+
+  if(!closedRounds.length){
+    html+=`<div class="empty">⭐<br><br>Nenhuma rodada encerrada ainda.</div>`;
+    c.innerHTML=html;return;
+  }
+
+  // Dados por rodada ou geral
+  let recData=[];
+  if(activeRecTab==='all'){
+    const totalGames=closedRounds.reduce((s,r)=>s+r.games.length,0);
+    recData=PARTICIPANTS.map(p=>{
+      const pts=scores[p].total;
+      const pct=totalGames>0?Math.round(pts/totalGames*100):0;
+      return {name:p,pts,total:totalGames,pct};
+    }).sort((a,b)=>b.pct-a.pct||b.pts-a.pts);
+  } else {
+    const r=ROUNDS.find(x=>x.id===activeRecTab);
+    const totalGames=r.games.length;
+    recData=PARTICIPANTS.map(p=>{
+      const pts=scores[p].byRound[activeRecTab]||0;
+      const pct=totalGames>0?Math.round(pts/totalGames*100):0;
+      return {name:p,pts,total:totalGames,pct};
+    }).sort((a,b)=>b.pct-a.pct||b.pts-a.pts);
+  }
+
+  const best=recData[0];
+  const worst=recData[recData.length-1];
+
+  // Destaques
+  html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem">
+    <div class="rec-card" style="border-color:#8B6914">
+      <div class="rec-title">🥇 Melhor Aproveitamento</div>
+      <div style="font-size:15px;font-weight:700;color:#FFD700">${best.name}</div>
+      <div style="font-size:26px;font-weight:700;color:#4caf50;margin:4px 0">${best.pct}%</div>
+      <div style="font-size:11px;color:#666">${best.pts} de ${best.total} jogos</div>
+    </div>
+    <div class="rec-card" style="border-color:#3b0d0d">
+      <div class="rec-title">📉 Menor Aproveitamento</div>
+      <div style="font-size:15px;font-weight:700;color:#f44336">${worst.name}</div>
+      <div style="font-size:26px;font-weight:700;color:#f44336;margin:4px 0">${worst.pct}%</div>
+      <div style="font-size:11px;color:#666">${worst.pts} de ${worst.total} jogos</div>
+    </div>
+  </div>`;
+
+  html+=`<div class="rec-card"><div class="rec-title">📊 Aproveitamento por Participante</div>`;
+  recData.forEach((d,i)=>{
+    const pctClass=d.pct>=60?'high':d.pct>=35?'mid':'low';
+    const medals3=['🥇','🥈','🥉'];
+    const medalStr=i<3?medals3[i]:'';
+    const isBottom=i>=recData.length-4;
+    html+=`<div class="rec-row">
+      <div style="flex:1">
+        <div class="rec-name" style="color:${isBottom?'#f44336':i===0?'#FFD700':'#ccc'}">${medalStr} ${d.name}</div>
+        <div class="rec-detail">${d.pts} acerto${d.pts!==1?'s':''} de ${d.total} jogo${d.total!==1?'s':''}</div>
+        <div class="bar-bg"><div class="bar-fill ${pctClass}" style="width:${d.pct}%"></div></div>
+      </div>
+      <div style="margin-left:12px;text-align:right">
+        <div class="rec-pct ${pctClass}">${d.pct}%</div>
+        <div style="font-size:10px;color:#555;margin-top:2px">${isBottom?'<span style="color:#f44336">lanterna</span>':''}</div>
+      </div>
+    </div>`;
+  });
+  html+=`</div>`;
+
+  // Recordes históricos por rodada (só no modo geral)
+  if(activeRecTab==='all'&&closedRounds.length>0){
+    html+=`<div class="rec-card"><div class="rec-title">🏅 Melhor Rodada de Cada Participante</div>`;
+    const bestPerP=PARTICIPANTS.map(p=>{
+      let best={rid:'',pts:0,total:0,pct:0,rname:''};
+      closedRounds.forEach(r=>{
+        const pts=scores[p].byRound[r.id]||0;
+        const pct=Math.round(pts/r.games.length*100);
+        if(pct>best.pct||(pct===best.pct&&pts>best.pts)){best={rid:r.id,pts,total:r.games.length,pct,rname:r.name};}
+      });
+      return {name:p,...best};
+    }).sort((a,b)=>b.pct-a.pct||b.pts-a.pts);
+    bestPerP.forEach((d,i)=>{
+      if(!d.rid)return;
+      const pctClass=d.pct>=60?'high':d.pct>=35?'mid':'low';
+      html+=`<div class="rec-row">
+        <div style="flex:1">
+          <div class="rec-name">${d.name}</div>
+          <div class="rec-detail">${d.rname} — ${d.pts} de ${d.total} jogos</div>
+        </div>
+        <div style="margin-left:12px"><span class="rec-pct ${pctClass}" style="font-size:16px">${d.pct}%</span></div>
+      </div>`;
+    });
+    html+=`</div>`;
+  }
+
+  c.innerHTML=html;
+}
+function selRecTab(rid){activeRecTab=rid;renderRecordes();}
 
 loadState();
 </script>
