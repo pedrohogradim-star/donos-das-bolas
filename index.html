@@ -522,7 +522,13 @@ function renderResBody(){
   c.innerHTML=html;
 }
 function setResult(rid,gid,val){
-  state.results[rid][gid]=val;
+  if(!state.results[rid])state.results[rid]={};
+  // Toggle: clicar na opção já selecionada desmarca
+  if(state.results[rid][gid]===val){
+    delete state.results[rid][gid];
+  } else {
+    state.results[rid][gid]=val;
+  }
   save();renderResBody();
 }
 function closeRound(rid){
