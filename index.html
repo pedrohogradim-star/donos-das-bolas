@@ -501,16 +501,16 @@ function renderResBody(){
   if(!state.results[r.id])state.results[r.id]={};
   const rr=state.results[r.id],locked=state.closed[r.id];
   let html='';
-  if(locked)html+=`<div class="locked-notice">🔒 Rodada encerrada — resultados confirmados.</div>`;
+  if(locked)html+=`<div class="locked-notice">✅ Rodada encerrada — você ainda pode corrigir resultados individualmente.</div>`;
   r.games.forEach(g=>{
     const sel=rr[g.id]||'';
     html+=`<div class="game-block">
       <div class="game-meta">${g.time} · Grupo ${g.group}</div>
       <div style="font-size:13px;font-weight:600;color:#eee;margin-bottom:8px">${F(g.home)} ${g.home} vs ${g.away} ${F(g.away)}</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="result-btn${sel==='home'?' sel':''}" onclick="${locked?'':'setResult(\''+r.id+'\',\''+g.id+'\',\'home\')'}">${F(g.home)} ${g.home}</button>
-        <button class="result-btn${sel==='draw'?' sel':''}" onclick="${locked?'':'setResult(\''+r.id+'\',\''+g.id+'\',\'draw\')'}">Empate</button>
-        <button class="result-btn${sel==='away'?' sel':''}" onclick="${locked?'':'setResult(\''+r.id+'\',\''+g.id+'\',\'away\')'}">${F(g.away)} ${g.away}</button>
+        <button class="result-btn${sel==='home'?' sel':''}" onclick="setResult('${r.id}','${g.id}','home')">${F(g.home)} ${g.home}</button>
+        <button class="result-btn${sel==='draw'?' sel':''}" onclick="setResult('${r.id}','${g.id}','draw')">Empate</button>
+        <button class="result-btn${sel==='away'?' sel':''}" onclick="setResult('${r.id}','${g.id}','away')">${F(g.away)} ${g.away}</button>
       </div>
     </div>`;
   });
@@ -518,13 +518,10 @@ function renderResBody(){
   if(!locked){
     html+=`<button class="btn-green" ${!allFilled?'disabled':''} onclick="closeRound('${r.id}')">▶ Gerar Resultado — ${r.name}</button>`;
     if(!allFilled)html+=`<p style="font-size:11px;color:#555;text-align:center;margin-top:6px">Preencha todos os resultados para gerar.</p>`;
-  } else {
-    html+=`<button class="btn-red" onclick="askReset('${r.id}')">⚠️ Resetar ${r.name} (corrigir erros)</button>`;
   }
   c.innerHTML=html;
 }
 function setResult(rid,gid,val){
-  if(state.closed[rid])return;
   state.results[rid][gid]=val;
   save();renderResBody();
 }
