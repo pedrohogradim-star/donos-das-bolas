@@ -1,3 +1,6 @@
+LOGO_B64=$(cat /tmp/logo_b64.txt)
+
+cat > /home/claude/index_new.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -28,6 +31,8 @@ body{font-family:'Oswald',sans-serif;color:#ccc}
 .btn-green{background:#0d3b1a;color:#4caf50;border:1px solid #4caf50;font-weight:600;width:100%;padding:13px;margin-top:8px;font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:1px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:all .2s}
 .btn-green:hover:not(:disabled){background:#4caf50;color:#000}
 .btn-green:disabled{opacity:.4;cursor:not-allowed}
+.btn-reopen{background:#0a1a2a;color:#64b5f6;border:1px solid #1565c0;font-weight:600;width:100%;padding:10px;margin-top:6px;font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:all .2s}
+.btn-reopen:hover{background:#1565c0;color:#fff}
 .rtab{padding:7px 12px;font-size:11px;font-family:'Oswald',sans-serif;font-weight:500;letter-spacing:1px;text-transform:uppercase;border:1px solid #444;border-radius:4px;background:transparent;cursor:pointer;color:#666;transition:all .2s}
 .rtab.active{border-color:#FFD700;color:#FFD700;background:#1a1500}
 .rtab:disabled{opacity:.3;cursor:not-allowed}
@@ -122,11 +127,44 @@ body{font-family:'Oswald',sans-serif;color:#ccc}
 .sb-edit{background:#1a1500;color:#FFD700;border:1px solid #8B6914}
 .sb-pending{background:#1a1a1a;color:#555;border:1px solid #333}
 .sb-locked{background:#3b0d0d;color:#f44336;border:1px solid #f44336}
+/* parcial de votos abaixo do jogo */
+.vote-partial{display:flex;gap:4px;justify-content:space-between;margin-top:5px;font-size:9px;color:#555;letter-spacing:.3px}
+.vote-partial-col{flex:1;text-align:center;line-height:1.4}
+.vote-partial-col.has-votes{color:#8B6914}
+/* palpite especial (campeão etc) */
+.special-block{border:1px solid #2a2a2a;border-radius:6px;padding:12px 14px;margin-bottom:8px;background:#0d0d0d;cursor:pointer;transition:border-color .15s}
+.special-block:hover{border-color:#8B6914}
+.special-block.done{border-color:#4caf50;background:#061a0f}
+.special-block.locked{cursor:default;border-color:#2a2a2a}
+.special-title{font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#8B6914;margin-bottom:4px}
+.special-val{font-size:14px;font-weight:700;color:#FFD700}
+.special-hint{font-size:10px;color:#555;letter-spacing:.5px;margin-top:3px}
+/* modal de seleção de seleção */
+.nations-modal{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:600;display:flex;flex-direction:column;padding:1rem}
+.nations-modal-box{background:#111;border:1px solid #8B6914;border-radius:8px;overflow:hidden;display:flex;flex-direction:column;max-height:90vh;width:100%;max-width:400px;margin:auto}
+.nations-header{padding:12px 16px;border-bottom:1px solid #2a2a2a;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#FFD700;display:flex;justify-content:space-between;align-items:center}
+.nations-list{overflow-y:auto;flex:1}
+.nation-item{padding:11px 16px;border-bottom:1px solid #1a1a1a;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:14px;color:#aaa;transition:background .15s}
+.nation-item:hover{background:#1a1a1a}
+.nation-item.sel{background:#0d3b1a;color:#4caf50;font-weight:600}
+.nation-item:last-child{border-bottom:none}
+/* tela inicial de seleção de nome */
+.welcome-screen{display:flex;flex-direction:column;align-items:center;padding:2rem 1rem 1rem;text-align:center}
+.welcome-logo{width:120px;height:120px;object-fit:contain;margin-bottom:1rem}
+.welcome-title{font-size:clamp(20px,5vw,28px);font-weight:700;letter-spacing:3px;text-transform:uppercase;background:linear-gradient(135deg,#FFD700,#FFA500,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+.welcome-sub{font-size:10px;letter-spacing:2px;color:#8B6914;text-transform:uppercase;margin-bottom:1.5rem}
+/* ptabs de palpite (jogos / especiais) */
+.ptab-row{display:flex;gap:6px;margin-bottom:1rem;border-bottom:1px solid #2a2a2a;padding-bottom:8px}
+.ptab-btn{padding:8px 14px;font-size:11px;font-family:'Oswald',sans-serif;font-weight:500;letter-spacing:1px;text-transform:uppercase;border:1px solid #444;border-radius:4px;background:transparent;cursor:pointer;color:#666;transition:all .2s}
+.ptab-btn.active{border-color:#FFD700;color:#FFD700;background:#1a1500}
+/* reopen per-game */
+.btn-reopen-game{padding:4px 10px;font-size:10px;font-family:'Oswald',sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;border:1px solid #1565c0;border-radius:3px;background:#0a1a2a;color:#64b5f6;cursor:pointer;margin-top:6px;transition:all .2s}
+.btn-reopen-game:hover{background:#1565c0;color:#fff}
 </style>
 </head>
 <body>
 <div class="loading-screen" id="loading">
-  <div style="font-size:48px">🏆</div>
+  <img src="LOGO_PLACEHOLDER" style="width:100px;height:100px;object-fit:contain" onerror="this.style.display='none'">
   <p>Carregando bolão...</p>
   <div class="spinner"></div>
 </div>
@@ -148,10 +186,42 @@ body{font-family:'Oswald',sans-serif;color:#ccc}
   </div>
 </div>
 
+<!-- Modal de seleção de seleção (campeão etc) -->
+<div class="nations-modal" id="nations-modal" style="display:none">
+  <div class="nations-modal-box">
+    <div class="nations-header">
+      <span id="nations-modal-title">Selecione a seleção</span>
+      <button onclick="closeNationsModal()" style="background:none;border:none;color:#8B6914;font-size:20px;cursor:pointer;line-height:1">×</button>
+    </div>
+    <div class="nations-list" id="nations-list"></div>
+    <div style="padding:10px 14px;border-top:1px solid #2a2a2a;display:flex;gap:8px">
+      <button class="modal-btn" style="flex:1" onclick="confirmNations()">Confirmar</button>
+      <button class="modal-cancel" style="flex:1;margin-top:0" onclick="closeNationsModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Tela inicial de seleção de nome -->
+<div class="app" id="welcome-app" style="display:none">
+  <div class="wm">🏆</div>
+  <div class="inner">
+    <div class="welcome-screen">
+      <img src="LOGO_PLACEHOLDER" class="welcome-logo" onerror="this.style.display='none'">
+      <div class="welcome-title">Os Donos das Bolas</div>
+      <div class="welcome-sub">Bolão Copa do Mundo 2026</div>
+      <div class="participant-modal" style="width:100%;max-width:360px">
+        <div class="plist-header">👤 Selecione seu nome</div>
+        <div id="welcome-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="app" id="app" style="display:none">
   <div class="wm">🏆</div>
   <div class="inner">
     <div class="header">
+      <img src="LOGO_PLACEHOLDER" style="width:60px;height:60px;object-fit:contain;margin-bottom:6px" onerror="this.style.display='none'">
       <h1>Os Donos das Bolas</h1>
       <p>Bolão Copa do Mundo 2026</p>
       <div class="header-admin" id="admin-bar" style="display:none">
@@ -174,6 +244,10 @@ body{font-family:'Oswald',sans-serif;color:#ccc}
 <div class="saving" id="saving-toast">💾 Salvo!</div>
 
 <script>
+// ── Logo base64 ───────────────────────────────────────────────────────────────
+const LOGO_B64 = 'data:image/webp;base64,LOGO_DATA_PLACEHOLDER';
+document.querySelectorAll('img[src="LOGO_PLACEHOLDER"]').forEach(el=>el.src=LOGO_B64);
+
 const FLAGS={
   "México":"🇲🇽","África do Sul":"🇿🇦","Coreia do Sul":"🇰🇷","Rep. Tcheca":"🇨🇿",
   "Canadá":"🇨🇦","Bósnia":"🇧🇦","Estados Unidos":"🇺🇸","Paraguai":"🇵🇾",
@@ -192,45 +266,135 @@ const FLAGS={
 };
 function F(t){return FLAGS[t]||'🏳';}
 
+const ALL_NATIONS=[
+  "África do Sul","Alemanha","Arábia Saudita","Argentina","Argélia","Austrália","Áustria",
+  "Bélgica","Bósnia","Brasil","Cabo Verde","Canadá","Catar","Colômbia","Coreia do Sul",
+  "Costa do Marfim","Croácia","Curaçao","Egito","Equador","Escócia","Espanha",
+  "Estados Unidos","França","Gana","Haiti","Holanda","Inglaterra","Irã","Iraque",
+  "Japão","Jordânia","Marrocos","México","Nova Zelândia","Noruega","Panamá","Paraguai",
+  "Portugal","RD Congo","Rep. Tcheca","Senegal","Suécia","Suíça","Tunísia","Turquia",
+  "Uruguai","Uzbequistão"
+].sort();
+
 const ADMIN_PASSWORDS={Pedro:"pedro123",Rosalves:"rosalves123"};
 const PARTICIPANTS=["Pedro","Neto","Xavier","Macleiton","João Victor","Rosalves","Alexandre","Filipi","Matheus","Arruda","PH","Luís Eduardo","Luís Felipe","Elicom","João Antônio","Caio"];
 
-// Horários em UTC-3 (Brasília). Rodada fecha 30min antes do 1º jogo, reabre 2h após o último.
-// Datas: new Date('2026-MM-DDTHH:MM:00-03:00')
+// Horários dos jogos por id (para verificar se já começou)
+// Formato: new Date('2026-MM-DDTHH:MM:00-03:00')
+const GAME_TIMES = {
+  "g101":new Date('2026-06-11T16:00:00-03:00'),
+  "g102":new Date('2026-06-11T23:00:00-03:00'),
+  "g103":new Date('2026-06-12T16:00:00-03:00'),
+  "g104":new Date('2026-06-12T22:00:00-03:00'),
+  "g105":new Date('2026-06-13T16:00:00-03:00'),
+  "g106":new Date('2026-06-13T19:00:00-03:00'),
+  "g107":new Date('2026-06-13T22:00:00-03:00'),
+  "g108":new Date('2026-06-14T01:00:00-03:00'),
+  "g109":new Date('2026-06-14T14:00:00-03:00'),
+  "g110":new Date('2026-06-14T17:00:00-03:00'),
+  "g111":new Date('2026-06-14T20:00:00-03:00'),
+  "g112":new Date('2026-06-14T23:00:00-03:00'),
+  "g113":new Date('2026-06-15T13:00:00-03:00'),
+  "g114":new Date('2026-06-15T16:00:00-03:00'),
+  "g115":new Date('2026-06-15T19:00:00-03:00'),
+  "g116":new Date('2026-06-15T22:00:00-03:00'),
+  "g117":new Date('2026-06-16T16:00:00-03:00'),
+  "g118":new Date('2026-06-16T19:00:00-03:00'),
+  "g119":new Date('2026-06-16T22:00:00-03:00'),
+  "g120":new Date('2026-06-17T01:00:00-03:00'),
+  "g121":new Date('2026-06-17T14:00:00-03:00'),
+  "g122":new Date('2026-06-17T17:00:00-03:00'),
+  "g123":new Date('2026-06-17T20:00:00-03:00'),
+  "g124":new Date('2026-06-17T23:00:00-03:00'),
+  "g201":new Date('2026-06-18T13:00:00-03:00'),
+  "g202":new Date('2026-06-18T16:00:00-03:00'),
+  "g203":new Date('2026-06-18T19:00:00-03:00'),
+  "g204":new Date('2026-06-18T22:00:00-03:00'),
+  "g205":new Date('2026-06-19T16:00:00-03:00'),
+  "g206":new Date('2026-06-19T19:00:00-03:00'),
+  "g207":new Date('2026-06-19T21:30:00-03:00'),
+  "g208":new Date('2026-06-20T01:00:00-03:00'),
+  "g209":new Date('2026-06-20T14:00:00-03:00'),
+  "g210":new Date('2026-06-20T17:00:00-03:00'),
+  "g211":new Date('2026-06-20T21:00:00-03:00'),
+  "g212":new Date('2026-06-21T01:00:00-03:00'),
+  "g213":new Date('2026-06-21T13:00:00-03:00'),
+  "g214":new Date('2026-06-21T16:00:00-03:00'),
+  "g215":new Date('2026-06-21T19:00:00-03:00'),
+  "g216":new Date('2026-06-21T22:00:00-03:00'),
+  "g217":new Date('2026-06-22T14:00:00-03:00'),
+  "g218":new Date('2026-06-22T18:00:00-03:00'),
+  "g219":new Date('2026-06-22T21:00:00-03:00'),
+  "g220":new Date('2026-06-23T00:00:00-03:00'),
+  "g221":new Date('2026-06-23T14:00:00-03:00'),
+  "g222":new Date('2026-06-23T17:00:00-03:00'),
+  "g223":new Date('2026-06-23T20:00:00-03:00'),
+  "g224":new Date('2026-06-23T23:00:00-03:00'),
+  "g301":new Date('2026-06-24T16:00:00-03:00'),
+  "g302":new Date('2026-06-24T16:00:00-03:00'),
+  "g303":new Date('2026-06-24T19:00:00-03:00'),
+  "g304":new Date('2026-06-24T19:00:00-03:00'),
+  "g305":new Date('2026-06-24T22:00:00-03:00'),
+  "g306":new Date('2026-06-24T22:00:00-03:00'),
+  "g307":new Date('2026-06-25T17:00:00-03:00'),
+  "g308":new Date('2026-06-25T17:00:00-03:00'),
+  "g309":new Date('2026-06-25T20:00:00-03:00'),
+  "g310":new Date('2026-06-25T20:00:00-03:00'),
+  "g311":new Date('2026-06-25T23:00:00-03:00'),
+  "g312":new Date('2026-06-25T23:00:00-03:00'),
+  "g313":new Date('2026-06-26T16:00:00-03:00'),
+  "g314":new Date('2026-06-26T16:00:00-03:00'),
+  "g315":new Date('2026-06-26T21:00:00-03:00'),
+  "g316":new Date('2026-06-26T21:00:00-03:00'),
+  "g317":new Date('2026-06-27T00:00:00-03:00'),
+  "g318":new Date('2026-06-27T00:00:00-03:00'),
+  "g319":new Date('2026-06-27T18:00:00-03:00'),
+  "g320":new Date('2026-06-27T18:00:00-03:00'),
+  "g321":new Date('2026-06-27T20:30:00-03:00'),
+  "g322":new Date('2026-06-27T20:30:00-03:00'),
+  "g323":new Date('2026-06-27T23:00:00-03:00'),
+  "g324":new Date('2026-06-27T23:00:00-03:00')
+};
+
+function gameStarted(gid){
+  const t=GAME_TIMES[gid];
+  if(!t)return false;
+  return new Date()>=t;
+}
+
 const ROUND_SCHEDULE = {
   r1: {
-    closeAt:  new Date('2026-06-11T15:30:00-03:00'), // 30min antes de 16h
-    reopenAt: new Date('2026-06-18T01:00:00-03:00'), // 2h após 17/06 23h
+    closeAt:  new Date('2026-06-11T15:30:00-03:00'),
+    reopenAt: new Date('2026-06-18T01:00:00-03:00'),
   },
   r2: {
-    closeAt:  new Date('2026-06-18T12:30:00-03:00'), // 30min antes de 13h
-    reopenAt: new Date('2026-06-24T01:00:00-03:00'), // 2h após 23/06 23h
+    closeAt:  new Date('2026-06-18T12:30:00-03:00'),
+    reopenAt: new Date('2026-06-24T01:00:00-03:00'),
   },
   r3: {
-    closeAt:  new Date('2026-06-24T15:30:00-03:00'), // 30min antes de 16h
-    reopenAt: new Date('2026-06-28T01:00:00-03:00'), // 2h após 27/06 23h
+    closeAt:  new Date('2026-06-24T15:30:00-03:00'),
+    reopenAt: new Date('2026-06-28T01:00:00-03:00'),
   }
 };
 
-// Retorna o estado de tempo de uma rodada
 function getRoundTimeStatus(rid) {
   const now = new Date();
   const sched = ROUND_SCHEDULE[rid];
   if (!sched) return { open: true, label: '' };
   if (now < sched.closeAt) {
-    // Aberta — mosrtrar countdown para fechamento
     const diff = sched.closeAt - now;
     return { open: true, countdown: diff, label: 'palpites fecham em', urgent: diff < 3600000 };
   }
   if (now >= sched.closeAt && now < sched.reopenAt) {
     return { open: false, label: 'Palpites encerrados — aguardando rodada' };
   }
-  return { open: true, label: '' }; // reabriu para próxima rodada (não se aplica aqui)
+  return { open: true, label: '' };
 }
 
-// Verifica se palpites estão abertos para uma rodada (por tempo OU por encerramento manual)
 function canVote(rid) {
-  if (state.closed[rid]) return false; // já encerrada manualmente
+  if (state.closed[rid]) return false;
+  // Verifica se foi reaberto manualmente pelo Pedro para esta rodada
+  if (state.manualOpen && state.manualOpen[rid]) return true;
   const ts = getRoundTimeStatus(rid);
   return ts.open;
 }
@@ -330,13 +494,18 @@ const ROUNDS=[
 const FIREBASE_URL="https://donos-das-bolas-default-rtdb.firebaseio.com";
 const DB_KEY="bolao_donos_v1";
 
-// Estado: votes, results, closed, unlocked, submitted (palpites enviados), drafts (rascunhos)
-let state={votes:{},results:{},closed:{r1:false,r2:false,r3:false},unlocked:{r1:true,r2:false,r3:false},submitted:{}};
+// manualOpen: {rid: bool} — Pedro reabre a rodada inteira
+// gameReopen: {rid: {gid: {pid: bool}}} — Pedro reabre jogo específico p/ participante
+// specialPicks: {pid: {champion: str, surprise: str, disappointment: str, goFar: [str,str,str]}}
+// specialLocked: {pid: bool} — se o participante já enviou e está travado
+let state={votes:{},results:{},closed:{r1:false,r2:false,r3:false},unlocked:{r1:true,r2:false,r3:false},submitted:{},manualOpen:{},gameReopen:{},specialPicks:{},specialLocked:{}};
 let loaded=false;
 let adminUser=null;
+let currentUser=null; // usuário selecionado na tela inicial
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 function isAdmin(){return adminUser!==null;}
+function isPedro(){return adminUser==='Pedro';}
 function showLoginModal(cb){
   window._loginCb=cb||null;
   document.getElementById('login-modal').style.display='flex';
@@ -368,11 +537,14 @@ async function loadState(){
     const res=await fetch(`${FIREBASE_URL}/${DB_KEY}.json`);
     if(res.ok){
       const d=await res.json();
-      if(d) state=Object.assign({votes:{},results:{},closed:{r1:false,r2:false,r3:false},unlocked:{r1:true,r2:false,r3:false},submitted:{}},d);
+      if(d) state=Object.assign({votes:{},results:{},closed:{r1:false,r2:false,r3:false},unlocked:{r1:true,r2:false,r3:false},submitted:{},manualOpen:{},gameReopen:{},specialPicks:{},specialLocked:{}},d);
     }
   }catch(e){console.warn('Firebase indisponível',e);}
+  if(!state.manualOpen)state.manualOpen={};
+  if(!state.gameReopen)state.gameReopen={};
+  if(!state.specialPicks)state.specialPicks={};
+  if(!state.specialLocked)state.specialLocked={};
   loaded=true;
-  // Auto-marcar como enviado quem já tem todos os jogos votados
   if(!state.submitted)state.submitted={};
   let autoSaved=false;
   ROUNDS.forEach(r=>{
@@ -388,8 +560,9 @@ async function loadState(){
   });
   if(autoSaved)save();
   document.getElementById('loading').style.display='none';
-  document.getElementById('app').style.display='block';
-  renderCurrent();
+  // Mostrar tela de seleção de nome
+  document.getElementById('welcome-app').style.display='block';
+  renderWelcome();
   startCountdownTick();
 }
 let saveTimer=null;
@@ -408,7 +581,6 @@ let tickInterval=null;
 function startCountdownTick(){
   if(tickInterval)clearInterval(tickInterval);
   tickInterval=setInterval(()=>{
-    // Atualiza só o timer sem re-renderizar tudo
     const el=document.getElementById('countdown-timer-val');
     const ridEl=document.getElementById('countdown-timer-rid');
     if(!el||!ridEl)return;
@@ -422,10 +594,36 @@ function startCountdownTick(){
   },1000);
 }
 
+// ── Tela inicial ──────────────────────────────────────────────────────────────
+function renderWelcome(){
+  const c=document.getElementById('welcome-list');
+  let html='';
+  PARTICIPANTS.forEach(p=>{
+    const esc=p.replace(/'/g,"\\'");
+    html+=`<div class="pitem" onclick="selectUser('${esc}')">
+      <span style="font-size:15px;font-weight:600;letter-spacing:1px">${p}</span>
+      <span style="color:#555;font-size:18px">›</span>
+    </div>`;
+  });
+  c.innerHTML=html;
+}
+
+function selectUser(p){
+  currentUser=p;
+  activeP=p;
+  showingPList=false;
+  document.getElementById('welcome-app').style.display='none';
+  document.getElementById('app').style.display='block';
+  const open=ROUNDS.find(r=>state.unlocked[r.id]&&!state.closed[r.id]);
+  activePTab=open?open.id:(ROUNDS.find(r=>state.unlocked[r.id])||ROUNDS[0]).id;
+  activePSubTab='jogos';
+  renderCurrent();
+}
+
 // ── Tabs ──────────────────────────────────────────────────────────────────────
-let activeP=null,showingPList=true,activePTab='r1',activeResTab='r1',activeRankTab='all',activeRecTab='all',currentTab='palpites';
-// rascunho local por pessoa+rodada (antes de "Enviar")
-let draft={}; // {pid: {rid: {gid: val}}}
+let activeP=null,showingPList=false,activePTab='r1',activeResTab='r1',activeRankTab='all',activeRecTab='all',currentTab='palpites';
+let activePSubTab='jogos'; // 'jogos' ou 'especiais'
+let draft={};
 
 function renderCurrent(){
   if(currentTab==='palpites')renderPalpites();
@@ -449,67 +647,36 @@ function isSubmitted(p,rid){
 function getDraft(p,rid){
   if(!draft[p])draft[p]={};
   if(!draft[p][rid]){
-    // inicializa com palpites já enviados, se houver
     const saved=(state.votes[rid]&&state.votes[rid][p])||{};
     draft[p][rid]=Object.assign({},saved);
   }
   return draft[p][rid];
 }
 
-// ── Palpites ─ lista ──────────────────────────────────────────────────────────
+// Verifica se Pedro reabriu jogo específico para participante
+function isGameReopened(rid,gid,p){
+  return !!(state.gameReopen&&state.gameReopen[rid]&&state.gameReopen[rid][gid]&&state.gameReopen[rid][gid][p]);
+}
+
+// canVoteGame: verifica se pode votar naquele jogo específico
+function canVoteGame(rid,gid,p){
+  if(state.closed[rid])return false;
+  // Jogo específico reaberto pelo Pedro para essa pessoa?
+  if(isGameReopened(rid,gid,p))return true;
+  // Rodada reaberta manualmente pelo Pedro?
+  if(state.manualOpen&&state.manualOpen[rid])return true;
+  // Jogo já começou? Não pode votar
+  if(gameStarted(gid))return false;
+  // Rodada aberta por tempo?
+  const ts=getRoundTimeStatus(rid);
+  return ts.open;
+}
+
+// ── Palpites ──────────────────────────────────────────────────────────────────
 function renderPalpites(){
   const c=document.getElementById('tab-palpites');
   if(!loaded){c.innerHTML='<div class="empty">Carregando...</div>';return;}
-  if(showingPList||!activeP){renderPList(c);}
-  else{renderPalpiteForm(c);}
-}
-
-function renderPList(c){
-  const scored=computeScores();
-  // Rodada aberta atual
-  const activeRound=ROUNDS.find(r=>state.unlocked[r.id]&&!state.closed[r.id])||ROUNDS[0];
-  const rid=activeRound.id;
-
-  let html=`<div class="participant-modal"><div class="plist-header">⚽ Selecione seu nome</div>`;
-  PARTICIPANTS.forEach(p=>{
-    const esc=p.replace(/'/g,"\\'");
-    const submitted=isSubmitted(p,rid);
-    const pvSaved=(state.votes[rid]&&state.votes[rid][p])||{};
-    const doneCount=Object.values(pvSaved).filter(Boolean).length;
-    const total=activeRound.games.length;
-    const pts=scored[p]?scored[p].total:0;
-    const cv=canVote(rid);
-
-    let badge='';
-    if(state.closed[rid]){
-      badge=`<span class="status-badge sb-locked">encerrada</span>`;
-    } else if(!cv){
-      badge=`<span class="status-badge sb-locked">⏰ fechado</span>`;
-    } else if(submitted){
-      badge=`<span class="status-badge sb-done">✓ enviado</span>`;
-    } else if(doneCount>0){
-      badge=`<span class="status-badge sb-edit">rascunho ${doneCount}/${total}</span>`;
-    } else {
-      badge=`<span class="status-badge sb-pending">pendente</span>`;
-    }
-
-    html+=`<div class="pitem" onclick="selectP('${esc}')">
-      <span style="font-size:15px;font-weight:600;letter-spacing:1px">${p}</span>
-      <span style="display:flex;align-items:center;gap:8px">
-        ${badge}
-        ${pts>0?`<span class="pts">${pts}pts</span>`:''}
-      </span>
-    </div>`;
-  });
-  html+=`</div>`;
-  c.innerHTML=html;
-}
-
-function selectP(p){
-  activeP=p;showingPList=false;
-  const open=ROUNDS.find(r=>state.unlocked[r.id]&&!state.closed[r.id]);
-  activePTab=open?open.id:(ROUNDS.find(r=>state.unlocked[r.id])||ROUNDS[0]).id;
-  renderPalpites();
+  renderPalpiteForm(c);
 }
 
 // ── Palpites ─ formulário ─────────────────────────────────────────────────────
@@ -519,20 +686,18 @@ function renderPalpiteForm(c){
   const cv=canVote(rid);
   const submitted=isSubmitted(activeP,rid);
   const roundClosed=state.closed[rid];
-  const isEditable = cv && !submitted && !roundClosed;
-  const isViewOnly = roundClosed || (!cv && submitted) || (!cv && !submitted);
 
-  // Se está editando (enviado mas ainda aberto): usa rascunho a partir do enviado
-  const pv = isEditable ? getDraft(activeP,rid) : ((state.votes[rid]&&state.votes[rid][activeP])||{});
+  const pv = getDraft(activeP,rid);
+  // Para view: usa salvo; para edição usa draft
+  const pvDisplay = (!cv && !Object.keys(pv).some(k=>pv[k])) ? ((state.votes[rid]&&state.votes[rid][activeP])||{}) : pv;
 
-  const done=r.games.filter(g=>pv[g.id]).length;
+  const done=r.games.filter(g=>pvDisplay[g.id]).length;
   const total=r.games.length;
   const allDone=done===total;
 
   const ts=getRoundTimeStatus(rid);
 
-  let html=`<button class="back-btn" onclick="goBack()">← Voltar</button>`;
-  html+=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+  let html=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
     <div class="pname-display">${activeP}</div>
     <span class="pill ${allDone?'pill-ok':'pill-no'}">${done}/${total}</span>
   </div>`;
@@ -543,6 +708,18 @@ function renderPalpiteForm(c){
     return `<button class="rtab${activePTab===r2.id?' active':''}" onclick="selectPTab('${r2.id}')" ${!ul?'disabled':''}>${r2.name}</button>`;
   }).join('');
   html+=`<div class="round-tab-row">${roundBtns}</div>`;
+
+  // Sub-abas: jogos / especiais
+  html+=`<div class="ptab-row">
+    <button class="ptab-btn${activePSubTab==='jogos'?' active':''}" onclick="selectPSubTab('jogos')">⚽ Jogos</button>
+    <button class="ptab-btn${activePSubTab==='especiais'?' active':''}" onclick="selectPSubTab('especiais')">🌟 Especiais da Copa</button>
+  </div>`;
+
+  if(activePSubTab==='especiais'){
+    html+=renderSpeciaisHTML();
+    c.innerHTML=html;
+    return;
+  }
 
   // Countdown
   if(!roundClosed && ts.countdown!=null){
@@ -557,17 +734,28 @@ function renderPalpiteForm(c){
   // Status notices
   if(roundClosed){
     html+=`<div class="notice notice-warn">🔒 Rodada encerrada — apenas consulta.</div>`;
+  } else if(state.manualOpen&&state.manualOpen[rid]){
+    html+=`<div class="notice notice-info">🔓 Rodada reaberta pelo administrador. Palpites de jogos não iniciados podem ser editados.</div>`;
   } else if(!cv){
     html+=`<div class="notice notice-err">⏰ Palpites fechados para esta rodada.</div>`;
   } else if(submitted){
     html+=`<div class="notice notice-ok">✅ Palpite enviado! Você pode editar até 30 min antes do 1º jogo.</div>`;
   }
 
+  // Botão Pedro: reabrir rodada
+  if(isPedro()&&!roundClosed){
+    const isOpen=state.manualOpen&&state.manualOpen[rid];
+    html+=`<button class="btn-reopen" onclick="toggleManualOpen('${rid}')">${isOpen?'🔒 Fechar palpites desta rodada':'🔓 Reabrir palpites desta rodada (Pedro)'}</button>`;
+  }
+
   // Jogos
+  const allVotes=state.votes[rid]||{};
   r.games.forEach(g=>{
-    const sel=pv[g.id]||'';
-    const resVal=state.results[rid]&&state.results[rid][g.id];
-    const dis = isViewOnly ? 'disabled' : '';
+    const gid=g.id;
+    const canVG=canVoteGame(rid,gid,activeP);
+    const sel=pvDisplay[gid]||'';
+    const resVal=state.results[rid]&&state.results[rid][gid];
+    const dis=canVG?'':'disabled';
 
     const bc=(v)=>{
       const base=v==='draw'?'vote-draw':'vote-btn';
@@ -580,27 +768,50 @@ function renderPalpiteForm(c){
       return base+(sel===v?' sel':'');
     };
 
+    // Parcial: quem votou em quê neste jogo
+    const homeVoters=[],drawVoters=[],awayVoters=[];
+    PARTICIPANTS.forEach(pt=>{
+      const v=(allVotes[pt]||{})[gid];
+      if(v==='home')homeVoters.push(pt);
+      else if(v==='draw')drawVoters.push(pt);
+      else if(v==='away')awayVoters.push(pt);
+    });
+    const fmtVoters=arr=>arr.length?arr.map(n=>n.split(' ')[0]).join(', '):'—';
+
     html+=`<div class="game-block">
       <div class="game-meta">${g.time} · Grupo ${g.group}</div>
       <div class="vote-row">
-        <button class="${bc('home')}" ${dis} onclick="setDraft('${rid}','${g.id}','home')">
+        <button class="${bc('home')}" ${dis} onclick="setVote('${rid}','${gid}','home')">
           <span class="fl">${F(g.home)}</span><span class="tn">${g.home}</span>
         </button>
-        <button class="${bc('draw')}" ${dis} onclick="setDraft('${rid}','${g.id}','draw')">EMP</button>
-        <button class="${bc('away')}" ${dis} onclick="setDraft('${rid}','${g.id}','away')">
+        <button class="${bc('draw')}" ${dis} onclick="setVote('${rid}','${gid}','draw')">EMP</button>
+        <button class="${bc('away')}" ${dis} onclick="setVote('${rid}','${gid}','away')">
           <span class="fl">${F(g.away)}</span><span class="tn">${g.away}</span>
         </button>
       </div>
+      <div class="vote-partial">
+        <div class="vote-partial-col${homeVoters.length?' has-votes':''}">${fmtVoters(homeVoters)}</div>
+        <div class="vote-partial-col${drawVoters.length?' has-votes':''}">${fmtVoters(drawVoters)}</div>
+        <div class="vote-partial-col${awayVoters.length?' has-votes':''}">${fmtVoters(awayVoters)}</div>
+      </div>
+      ${isPedro()&&!roundClosed&&!canVG&&gameStarted(gid)?'<div style="font-size:9px;color:#444;margin-top:4px;letter-spacing:.5px">jogo em andamento — não é possível reabrir</div>':''}
+      ${isPedro()&&!roundClosed&&!canVG&&!gameStarted(gid)?renderReopenButtons(rid,gid):''}
     </div>`;
   });
 
   // Botão enviar / editar
-  if(!roundClosed && cv){
+  const anyEditable=r.games.some(g=>canVoteGame(rid,g.id,activeP));
+  if(anyEditable){
     if(!submitted){
-      html+=`<button class="btn-gold" ${!allDone?'disabled':''} onclick="submitPalpite('${rid}')">
-        ${allDone?'✅ Enviar Palpite':'⚽ Preencha todos os jogos para enviar'}
+      const allEditableDone=r.games.every(g=>{
+        if(!canVoteGame(rid,g.id,activeP))return true; // não precisa votar em jogos bloqueados já votados
+        return !!pvDisplay[g.id];
+      });
+      const allFilled=r.games.every(g=>!!pvDisplay[g.id]);
+      html+=`<button class="btn-gold" ${!allFilled?'disabled':''} onclick="submitPalpite('${rid}')">
+        ${allFilled?'✅ Enviar Palpite':'⚽ Preencha todos os jogos para enviar'}
       </button>`;
-      if(!allDone)html+=`<p style="font-size:11px;color:#555;text-align:center;margin-top:8px">${done} de ${total} jogos preenchidos</p>`;
+      if(!allFilled)html+=`<p style="font-size:11px;color:#555;text-align:center;margin-top:8px">${done} de ${total} jogos preenchidos</p>`;
     } else {
       html+=`<button class="btn-outline" onclick="editPalpite('${rid}')">✏️ Editar Palpite</button>`;
     }
@@ -610,13 +821,48 @@ function renderPalpiteForm(c){
   startCountdownTick();
 }
 
-function goBack(){showingPList=true;activeP=null;renderPalpites();}
-function selectPTab(rid){activePTab=rid;renderPalpites();}
+function renderReopenButtons(rid,gid){
+  let html=`<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">`;
+  PARTICIPANTS.forEach(p=>{
+    const esc=p.replace(/'/g,"\\'");
+    const isOpen=isGameReopened(rid,gid,p);
+    html+=`<button class="btn-reopen-game${isOpen?' active':''}" onclick="toggleGameReopen('${rid}','${gid}','${esc}')" style="${isOpen?'background:#0d3b1a;border-color:#4caf50;color:#4caf50':''}">
+      ${isOpen?'✓':''} ${p.split(' ')[0]}
+    </button>`;
+  });
+  html+=`</div>`;
+  return html;
+}
 
-function setDraft(rid,gid,val){
-  if(!canVote(rid)||isSubmitted(activeP,rid)||state.closed[rid])return;
+function toggleManualOpen(rid){
+  if(!isPedro())return;
+  if(!state.manualOpen)state.manualOpen={};
+  state.manualOpen[rid]=!state.manualOpen[rid];
+  save();renderPalpites();
+}
+
+function toggleGameReopen(rid,gid,p){
+  if(!isPedro())return;
+  if(gameStarted(gid)){alert('Este jogo já começou, não é possível reabrir.');return;}
+  if(!state.gameReopen)state.gameReopen={};
+  if(!state.gameReopen[rid])state.gameReopen[rid]={};
+  if(!state.gameReopen[rid][gid])state.gameReopen[rid][gid]={};
+  state.gameReopen[rid][gid][p]=!state.gameReopen[rid][gid][p];
+  save();renderPalpites();
+}
+
+function selectPTab(rid){activePTab=rid;renderPalpites();}
+function selectPSubTab(t){activePSubTab=t;renderPalpites();}
+
+function setVote(rid,gid,val){
+  if(!canVoteGame(rid,gid,activeP))return;
   const d=getDraft(activeP,rid);
   d[gid]=val;
+  // Salvar direto no state também
+  if(!state.votes[rid])state.votes[rid]={};
+  if(!state.votes[rid][activeP])state.votes[rid][activeP]={};
+  state.votes[rid][activeP][gid]=val;
+  save();
   renderPalpites();
 }
 
@@ -634,12 +880,147 @@ function submitPalpite(rid){
 }
 
 function editPalpite(rid){
-  if(!canVote(rid))return;
-  // Reativa edição: desmarca enviado e copia palpite salvo para rascunho
+  if(!canVote(rid)&&!r.games.some(g=>canVoteGame(rid,g.id,activeP)))return;
   if(!state.submitted[activeP])return;
   delete state.submitted[activeP][rid];
-  // rascunho já tem os dados, só re-renderiza
   renderPalpites();
+}
+
+// ── Especiais da Copa ─────────────────────────────────────────────────────────
+const SPECIAL_TYPES=[
+  {id:'champion',label:'🏆 Campeão da Copa',hint:'Escolha 1 seleção',multi:false},
+  {id:'surprise',label:'🌟 Surpresa da Copa',hint:'Escolha 1 seleção',multi:false},
+  {id:'disappointment',label:'😞 Decepção da Copa',hint:'Escolha 1 seleção',multi:false},
+  {id:'goFar',label:'🚀 Vai Longe na Copa',hint:'Escolha até 3 seleções',multi:true,max:3},
+];
+
+function renderSpeciaisHTML(){
+  const locked=!!(state.specialLocked&&state.specialLocked[activeP]);
+  const picks=(state.specialPicks&&state.specialPicks[activeP])||{};
+  let html=`<div class="notice notice-info">🌟 Palpites especiais — não contam para o ranking, serão revelados ao final da Copa.</div>`;
+  if(locked){
+    html+=`<div class="notice notice-ok">✅ Palpite especial enviado! ${isPedro()?'':'Aguarde o final da Copa para o resultado.'}</div>`;
+  }
+
+  SPECIAL_TYPES.forEach(st=>{
+    const val=picks[st.id];
+    const hasVal=multi_hasVal(st,val);
+    const displayVal=multi_displayVal(st,val);
+
+    const isLocked2=locked&&!isPedro();
+    html+=`<div class="special-block${hasVal?' done':''}${isLocked2?' locked':''}" onclick="${isLocked2?'':'openNationsModal(\''+st.id+'\')'}">
+      <div class="special-title">${st.label}</div>
+      <div class="special-val">${hasVal?displayVal:'— Selecione —'}</div>
+      <div class="special-hint">${st.hint}${hasVal?' ✓':''}</div>
+    </div>`;
+  });
+
+  if(!locked){
+    const allFilled=SPECIAL_TYPES.every(st=>multi_hasVal(st,picks[st.id]));
+    html+=`<button class="btn-gold" ${!allFilled?'disabled':''} onclick="submitSpeciais()">
+      ${allFilled?'✅ Enviar Palpites Especiais':'Preencha todos os campos acima'}
+    </button>`;
+  } else if(isPedro()){
+    html+=`<div style="margin-top:10px"><div class="plist-header" style="border-radius:6px 6px 0 0;padding:10px 14px">🔓 Pedro — Reabrir palpite especial por participante</div>`;
+    PARTICIPANTS.forEach(p=>{
+      const esc=p.replace(/'/g,"\\'");
+      const lk=!!(state.specialLocked&&state.specialLocked[p]);
+      html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid #1a1a1a;background:#0d0d0d">
+        <span style="font-size:13px;color:${lk?'#4caf50':'#666'}">${p} ${lk?'✓ enviado':'pendente'}</span>
+        ${lk?`<button class="btn-reopen-game" onclick="reopenSpecial('${esc}')">Reabrir</button>`:''}
+      </div>`;
+    });
+    html+=`</div>`;
+  }
+  return html;
+}
+
+function multi_hasVal(st,val){
+  if(!val)return false;
+  if(st.multi)return Array.isArray(val)&&val.length>0;
+  return !!val;
+}
+function multi_displayVal(st,val){
+  if(!val)return '';
+  if(st.multi&&Array.isArray(val))return val.map(v=>`${F(v)} ${v}`).join(', ');
+  return `${F(val)} ${val}`;
+}
+
+// Modal de nações
+let _nationsType=null;
+let _nationsTempSel=[];
+
+function openNationsModal(typeId){
+  if(!!(state.specialLocked&&state.specialLocked[activeP])&&!isPedro())return;
+  const st=SPECIAL_TYPES.find(x=>x.id===typeId);
+  if(!st)return;
+  _nationsType=typeId;
+  const picks=(state.specialPicks&&state.specialPicks[activeP])||{};
+  const cur=picks[typeId];
+  _nationsTempSel=st.multi?(Array.isArray(cur)?[...cur]:[]):(cur?[cur]:[]);
+  document.getElementById('nations-modal-title').textContent=st.label+(st.multi?` (máx ${st.max})`:'');
+  renderNationsList();
+  document.getElementById('nations-modal').style.display='flex';
+}
+
+function renderNationsList(){
+  const st=SPECIAL_TYPES.find(x=>x.id===_nationsType);
+  const c=document.getElementById('nations-list');
+  let html='';
+  ALL_NATIONS.forEach(n=>{
+    const esc=n.replace(/'/g,"\\'");
+    const isSel=_nationsTempSel.includes(n);
+    html+=`<div class="nation-item${isSel?' sel':''}" onclick="toggleNation('${esc}')">
+      <span>${F(n)}</span><span>${n}</span>
+      ${isSel?'<span style="margin-left:auto;color:#4caf50">✓</span>':''}
+    </div>`;
+  });
+  c.innerHTML=html;
+}
+
+function toggleNation(n){
+  const st=SPECIAL_TYPES.find(x=>x.id===_nationsType);
+  if(!st)return;
+  if(st.multi){
+    const idx=_nationsTempSel.indexOf(n);
+    if(idx>=0){_nationsTempSel.splice(idx,1);}
+    else{if(_nationsTempSel.length>=(st.max||1)){alert(`Máximo de ${st.max} seleções.`);return;}_nationsTempSel.push(n);}
+  } else {
+    _nationsTempSel=[n];
+  }
+  renderNationsList();
+}
+
+function confirmNations(){
+  const st=SPECIAL_TYPES.find(x=>x.id===_nationsType);
+  if(!st||!_nationsTempSel.length){closeNationsModal();return;}
+  if(!state.specialPicks)state.specialPicks={};
+  if(!state.specialPicks[activeP])state.specialPicks[activeP]={};
+  state.specialPicks[activeP][_nationsType]=st.multi?[..._nationsTempSel]:_nationsTempSel[0];
+  save();
+  closeNationsModal();
+  renderPalpites();
+}
+
+function closeNationsModal(){
+  document.getElementById('nations-modal').style.display='none';
+  _nationsType=null;_nationsTempSel=[];
+}
+
+function submitSpeciais(){
+  const picks=(state.specialPicks&&state.specialPicks[activeP])||{};
+  const allFilled=SPECIAL_TYPES.every(st=>multi_hasVal(st,picks[st.id]));
+  if(!allFilled)return;
+  if(!state.specialLocked)state.specialLocked={};
+  state.specialLocked[activeP]=true;
+  save();renderPalpites();
+}
+
+function reopenSpecial(p){
+  if(!isPedro())return;
+  if(!state.specialLocked)state.specialLocked={};
+  delete state.specialLocked[p];
+  save();renderPalpites();
 }
 
 // ── Resultados ────────────────────────────────────────────────────────────────
@@ -863,3 +1244,6 @@ loadState();
 </script>
 </body>
 </html>
+HTMLEOF
+
+echo "Arquivo criado: $(wc -l < /home/claude/index_new.html) linhas"
