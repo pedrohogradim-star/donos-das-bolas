@@ -1,6 +1,3 @@
-LOGO_B64=$(cat/tmp/logo_b64.txt)
-
-cat > /home/claude/index_new.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -1244,6 +1241,3 @@ loadState();
 </script>
 </body>
 </html>
-HTMLEOF
-
-echo "Arquivo criado: $(wc -l < /home/claude/index_new.html) linhas"
