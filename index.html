@@ -1,194 +1,177 @@
-
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Os Donos das Bolas — Bolão Copa 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body,html{background:#0a0a0a;min-height:100vh}
-.app{font-family:'Oswald',sans-serif;background:#0a0a0a;min-height:100vh;padding:0 0 3rem;position:relative}
-.wm{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:280px;opacity:.04;pointer-events:none;z-index:0;user-select:none;line-height:1}
-.inner{position:relative;z-index:1}
-.header{text-align:center;padding:1.5rem 1rem 1rem;border-bottom:1px solid #8B6914}
-.header h1{font-size:26px;font-weight:700;letter-spacing:3px;text-transform:uppercase;background:linear-gradient(135deg,#FFD700,#FFA500,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+html,body{background:#0a0a0a;min-height:100%;-webkit-tap-highlight-color:transparent}
+body{font-family:'Oswald',sans-serif;color:#ccc}
+.app{background:#0a0a0a;min-height:100vh;padding-bottom:2rem;position:relative;overflow-x:hidden}
+.wm{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:min(260px,50vw);opacity:.04;pointer-events:none;z-index:0;user-select:none;line-height:1}
+.inner{position:relative;z-index:1;max-width:680px;margin:0 auto}
+.header{text-align:center;padding:1.4rem 1rem .9rem;border-bottom:1px solid #8B6914}
+.header h1{font-size:clamp(20px,5vw,28px);font-weight:700;letter-spacing:3px;text-transform:uppercase;background:linear-gradient(135deg,#FFD700,#FFA500,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .header p{font-size:10px;letter-spacing:2px;color:#8B6914;margin-top:4px;text-transform:uppercase}
-.tabs{display:flex;border-bottom:1px solid #8B6914}
-.tab{flex:1;padding:11px 4px;font-size:11px;font-family:'Oswald',sans-serif;font-weight:500;letter-spacing:1px;text-transform:uppercase;background:transparent;border:none;cursor:pointer;color:#555;transition:all .2s}
+.header-admin{font-size:11px;color:#4caf50;letter-spacing:1px;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px}
+.tabs{display:flex;border-bottom:1px solid #8B6914;position:sticky;top:0;z-index:100;background:#0a0a0a}
+.tab{flex:1;padding:11px 2px;font-size:10px;font-family:'Oswald',sans-serif;font-weight:500;letter-spacing:.5px;text-transform:uppercase;background:transparent;border:none;cursor:pointer;color:#666;transition:all .2s;white-space:nowrap}
 .tab.active{color:#FFD700;border-bottom:2px solid #FFD700}
-.tab:hover:not(.active){color:#999}
-.section{display:none;padding:1rem}.section.active{display:block}
-.card{background:#111;border:1px solid #8B6914;border-radius:6px;padding:1rem 1.1rem;margin-bottom:.75rem}
-.btn{padding:7px 14px;font-size:11px;font-family:'Oswald',sans-serif;font-weight:500;letter-spacing:1px;text-transform:uppercase;border:1px solid #8B6914;border-radius:4px;background:transparent;color:#ccc;cursor:pointer;transition:all .2s}
-.btn:hover{background:#1a1a1a;color:#FFD700;border-color:#FFD700}
-.btn-gold{background:linear-gradient(135deg,#8B6914,#FFD700);color:#000;border:none;font-weight:700}
-.btn-gold:hover{background:linear-gradient(135deg,#FFD700,#FFA500)}
-.btn-green{background:#0d3b1a;color:#4caf50;border-color:#4caf50;font-weight:600}
-.btn-green:hover{background:#4caf50;color:#000}
-.btn-green:disabled{opacity:.35;cursor:not-allowed}
-.btn-red{background:#3b0d0d;color:#f44336;border-color:#f44336;font-weight:600}
-.btn-red:hover{background:#f44336;color:#fff}
-.btn-warn{background:#3b2800;color:#FFD700;border-color:#8B6914;font-weight:600}
-.btn-warn:hover{background:#8B6914;color:#000}
-.rtab{padding:5px 10px;font-size:11px;font-family:'Oswald',sans-serif;font-weight:500;letter-spacing:1px;text-transform:uppercase;border:1px solid #333;border-radius:4px;background:transparent;cursor:pointer;color:#555;transition:all .2s}
+.section{display:none;padding:.9rem}.section.active{display:block}
+.btn-gold{width:100%;padding:14px;background:linear-gradient(135deg,#8B6914,#FFD700);color:#000;font-family:'Oswald',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border:none;border-radius:6px;cursor:pointer;margin-top:10px;transition:all .2s}
+.btn-gold:disabled{opacity:.35;cursor:not-allowed}
+.btn-outline{width:100%;padding:12px;background:transparent;color:#8B6914;font-family:'Oswald',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;border:1px solid #8B6914;border-radius:6px;cursor:pointer;margin-top:8px;transition:all .2s}
+.btn-outline:hover{border-color:#FFD700;color:#FFD700}
+.btn-green{background:#0d3b1a;color:#4caf50;border:1px solid #4caf50;font-weight:600;width:100%;padding:13px;margin-top:8px;font-family:'Oswald',sans-serif;font-size:13px;letter-spacing:1px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:all .2s}
+.btn-green:hover:not(:disabled){background:#4caf50;color:#000}
+.btn-green:disabled{opacity:.4;cursor:not-allowed}
+.rtab{padding:7px 12px;font-size:11px;font-family:'Oswald',sans-serif;font-weight:500;letter-spacing:1px;text-transform:uppercase;border:1px solid #444;border-radius:4px;background:transparent;cursor:pointer;color:#666;transition:all .2s}
 .rtab.active{border-color:#FFD700;color:#FFD700;background:#1a1500}
-.rtab:hover:not(.active){border-color:#8B6914;color:#aaa}
 .rtab:disabled{opacity:.3;cursor:not-allowed}
-.round-tab-row{display:flex;gap:5px;margin-bottom:.85rem;flex-wrap:wrap}
-.game-block{border:1px solid #222;border-radius:6px;padding:9px 11px;margin-bottom:5px;background:#0d0d0d}
-.game-block:hover{border-color:#2a2a2a}
-.game-meta{font-size:10px;color:#555;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}
-.vote-row{display:grid;grid-template-columns:1fr auto 1fr;gap:4px;align-items:center;margin-bottom:5px}
-.vote-btn{padding:6px 4px;font-size:10px;font-family:'Oswald',sans-serif;font-weight:500;letter-spacing:.5px;border:1px solid #2a2a2a;border-radius:4px;background:#0a0a0a;cursor:pointer;color:#555;text-align:center;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:4px}
-.vote-btn:hover:not(:disabled){border-color:#8B6914;color:#ccc}
+.round-tab-row{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.game-block{border:1px solid #2a2a2a;border-radius:6px;padding:10px 12px;margin-bottom:6px;background:#0d0d0d}
+.game-meta{font-size:10px;color:#555;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
+.vote-row{display:grid;grid-template-columns:1fr auto 1fr;gap:4px;align-items:center}
+.vote-btn{padding:8px 4px;font-size:11px;font-family:'Oswald',sans-serif;font-weight:500;border:1px solid #333;border-radius:4px;background:#0a0a0a;cursor:pointer;color:#666;text-align:center;transition:all .15s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:54px;line-height:1.2}
+.vote-btn .fl{font-size:22px;line-height:1}
+.vote-btn .tn{font-size:10px;letter-spacing:.3px}
+.vote-btn:active:not(:disabled){opacity:.7}
 .vote-btn.sel{background:#1a1500;border-color:#FFD700;color:#FFD700;font-weight:600}
 .vote-btn.correct{background:#0d3b1a;border-color:#4caf50;color:#4caf50;font-weight:600}
-.vote-btn.wrong{background:#3b0d0d;border-color:#f44336;color:#f44336;opacity:.55;text-decoration:line-through}
-.vote-draw{font-size:9px;padding:6px 3px;border:1px solid #2a2a2a;border-radius:4px;background:#0a0a0a;cursor:pointer;color:#555;text-align:center;font-family:'Oswald',sans-serif;font-weight:500;letter-spacing:.5px;transition:all .15s;white-space:nowrap}
-.vote-draw:hover:not(:disabled){border-color:#8B6914;color:#ccc}
+.vote-btn.wrong{background:#3b0d0d;border-color:#f44336;color:#f44336;opacity:.6;text-decoration:line-through}
+.vote-btn:disabled{cursor:not-allowed;opacity:.5}
+.vote-draw{font-size:10px;padding:8px 5px;border:1px solid #333;border-radius:4px;background:#0a0a0a;cursor:pointer;color:#666;text-align:center;font-family:'Oswald',sans-serif;font-weight:500;transition:all .15s;min-height:54px;display:flex;align-items:center;justify-content:center}
 .vote-draw.sel{background:#1a1500;border-color:#FFD700;color:#FFD700;font-weight:600}
 .vote-draw.correct{background:#0d3b1a;border-color:#4caf50;color:#4caf50}
-.vote-draw.wrong{background:#3b0d0d;border-color:#f44336;color:#f44336;opacity:.55;text-decoration:line-through}
-.parcial-row{display:grid;grid-template-columns:1fr auto 1fr;gap:4px;margin-top:3px}
-.parcial-cell{font-size:9px;color:#555;letter-spacing:.3px;min-height:12px;line-height:1.3}
-.parcial-cell.center-cell{text-align:center}
-.parcial-cell.right-cell{text-align:right}
-.result-btn{padding:5px 9px;font-size:10px;font-family:'Oswald',sans-serif;font-weight:500;letter-spacing:.5px;border:1px solid #2a2a2a;border-radius:4px;background:transparent;cursor:pointer;color:#555;transition:all .15s;display:inline-flex;align-items:center;gap:4px}
+.vote-draw.wrong{background:#3b0d0d;border-color:#f44336;color:#f44336;opacity:.6;text-decoration:line-through}
+.vote-draw:disabled{cursor:not-allowed;opacity:.5}
+.result-btn{padding:7px 10px;font-size:11px;font-family:'Oswald',sans-serif;font-weight:500;border:1px solid #333;border-radius:4px;background:transparent;cursor:pointer;color:#666;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
 .result-btn:hover{border-color:#8B6914;color:#ccc}
 .result-btn.sel{background:#0d3b1a;border-color:#4caf50;color:#4caf50;font-weight:600}
-.rank-table{width:100%;border-collapse:collapse;font-family:'Oswald',sans-serif}
-.rank-table th{text-align:left;padding:7px 8px;font-weight:600;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8B6914;border-bottom:1px solid #222}
-.rank-table td{padding:7px 8px;border-bottom:1px solid #111;color:#ccc;font-size:13px}
+.rank-table{width:100%;border-collapse:collapse}
+.rank-table th{text-align:left;padding:8px 8px;font-weight:600;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#8B6914;border-bottom:1px solid #2a2a2a}
+.rank-table td{padding:8px 8px;border-bottom:1px solid #1a1a1a;color:#ccc;font-size:13px}
 .rank-table tr:last-child td{border-bottom:none}
-.rank-table tr:hover td{background:#0f0f0f}
-.medal{width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:700}
+.medal{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
 .m1{background:#FFD700;color:#000}.m2{background:#aaa;color:#000}.m3{background:#cd7f32;color:#fff}
-.pts{display:inline-block;min-width:24px;text-align:center;padding:1px 6px;border-radius:3px;background:#1a1500;border:1px solid #8B6914;font-size:12px;font-weight:600;color:#FFD700}
-.pill{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.pts{display:inline-block;min-width:28px;text-align:center;padding:2px 7px;border-radius:3px;background:#1a1500;border:1px solid #8B6914;font-size:13px;font-weight:600;color:#FFD700}
+.pill{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
 .pill-ok{background:#0d3b1a;color:#4caf50;border:1px solid #4caf50}
-.pill-no{background:#1a1a1a;color:#444;border:1px solid #222}
-.locked-notice{background:#1a1000;border:1px solid #8B6914;border-radius:6px;padding:9px 12px;font-size:11px;color:#8B6914;margin-bottom:8px;letter-spacing:.5px}
-.summary-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:.85rem}
-.smet{background:#111;border:1px solid #222;border-radius:6px;padding:10px 8px;text-align:center}
-.smet-val{font-size:22px;font-weight:700;color:#FFD700}
-.smet-lbl{font-size:9px;color:#555;letter-spacing:1px;text-transform:uppercase;margin-top:2px}
-.empty{text-align:center;padding:2rem;color:#333;font-size:13px;letter-spacing:1px;text-transform:uppercase}
-.pname-display{font-size:18px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#FFD700}
-.back-btn{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#8B6914;cursor:pointer;background:none;border:none;font-family:'Oswald',sans-serif;padding:0;margin-bottom:12px}
-.back-btn:hover{color:#FFD700}
-
-/* HOME SCREEN */
-.home-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem;min-height:60vh;gap:1.5rem}
-.home-trophy{font-size:80px;opacity:.8}
-.home-title{font-size:22px;font-weight:700;letter-spacing:3px;text-transform:uppercase;background:linear-gradient(135deg,#FFD700,#FFA500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center}
-.home-sub{font-size:12px;color:#555;letter-spacing:2px;text-transform:uppercase;text-align:center}
-.select-btn-big{padding:14px 32px;font-size:14px;font-family:'Oswald',sans-serif;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:linear-gradient(135deg,#8B6914,#FFD700);color:#000;border:none;border-radius:6px;cursor:pointer;transition:all .2s}
-.select-btn-big:hover{background:linear-gradient(135deg,#FFD700,#FFA500);transform:translateY(-1px)}
-
-/* PARTICIPANT LIST */
-.plist-wrap{background:#111;border:1px solid #8B6914;border-radius:8px;overflow:hidden;max-width:500px;margin:0 auto}
-.plist-header{padding:10px 14px;border-bottom:1px solid #2a2a2a;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#8B6914}
-.pitem{padding:11px 14px;cursor:pointer;color:#999;font-size:14px;font-weight:500;letter-spacing:.5px;border-bottom:1px solid #111;display:flex;align-items:center;justify-content:space-between;transition:all .2s}
+.pill-no{background:#1a1a1a;color:#555;border:1px solid #333}
+.notice{border-radius:6px;padding:10px 14px;font-size:12px;margin-bottom:10px;letter-spacing:.5px;line-height:1.5}
+.notice-warn{background:#1a1000;border:1px solid #8B6914;color:#8B6914}
+.notice-info{background:#0a1a2a;border:1px solid #1565c0;color:#64b5f6}
+.notice-ok{background:#0d3b1a;border:1px solid #4caf50;color:#4caf50}
+.notice-err{background:#3b0d0d;border:1px solid #f44336;color:#f44336}
+.summary-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:1rem}
+.smet{background:#111;border:1px solid #2a2a2a;border-radius:6px;padding:10px 6px;text-align:center}
+.smet-val{font-size:20px;font-weight:700;color:#FFD700}
+.smet-lbl{font-size:9px;color:#666;letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+.empty{text-align:center;padding:2.5rem;color:#444;font-size:13px;letter-spacing:1px;text-transform:uppercase}
+.participant-modal{background:#0d0d0d;border:1px solid #8B6914;border-radius:8px;overflow:hidden}
+.plist-header{padding:12px 16px;border-bottom:1px solid #2a2a2a;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#8B6914}
+.pitem{padding:13px 16px;cursor:pointer;color:#aaa;font-size:15px;font-weight:500;letter-spacing:.5px;border-bottom:1px solid #1a1a1a;display:flex;align-items:center;justify-content:space-between;transition:background .15s;-webkit-tap-highlight-color:transparent}
 .pitem:last-child{border-bottom:none}
-.pitem:hover{background:#1a1a1a;color:#FFD700}
-
-/* SPECIAL BETS */
-.special-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
-.special-card{background:#111;border:1px solid #2a2a2a;border-radius:8px;padding:14px 12px;cursor:pointer;transition:all .2s;text-align:center;position:relative}
-.special-card:hover{border-color:#8B6914;background:#161616}
-.special-card.done{border-color:#8B6914;opacity:.7}
-.special-card.done:hover{opacity:.85}
-.special-icon{font-size:28px;margin-bottom:6px}
-.special-label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#ccc}
-.special-done-badge{position:absolute;top:6px;right:6px;font-size:9px;padding:2px 6px;background:#0d3b1a;color:#4caf50;border:1px solid #4caf50;border-radius:3px;letter-spacing:.5px;font-weight:600}
-.special-selected{font-size:10px;color:#8B6914;margin-top:4px;letter-spacing:.5px}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;display:flex;align-items:flex-end;justify-content:center}
-.modal-box{background:#111;border:1px solid #8B6914;border-radius:12px 12px 0 0;width:100%;max-width:520px;max-height:80vh;overflow:hidden;display:flex;flex-direction:column}
-.modal-header{padding:14px 16px;border-bottom:1px solid #2a2a2a;display:flex;align-items:center;justify-content:space-between}
-.modal-title{font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#FFD700}
-.modal-sub{font-size:10px;color:#555;letter-spacing:.5px;margin-top:2px}
-.modal-close{background:none;border:none;color:#555;font-size:20px;cursor:pointer;font-family:'Oswald',sans-serif}
-.modal-close:hover{color:#FFD700}
-.modal-body{overflow-y:auto;flex:1;padding:8px}
-.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
-.team-item{padding:8px 6px;border:1px solid #222;border-radius:5px;background:#0d0d0d;cursor:pointer;text-align:center;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:3px}
-.team-item:hover{border-color:#8B6914;background:#111}
-.team-item.sel{border-color:#FFD700;background:#1a1500}
-.team-flag{font-size:22px}
-.team-name{font-size:9px;color:#777;letter-spacing:.3px;font-weight:500;line-height:1.2}
-.team-item.sel .team-name{color:#FFD700}
-.modal-footer{padding:10px 12px;border-top:1px solid #2a2a2a}
-
-/* PEDRO ADMIN */
-.admin-bar{background:#1a1000;border:1px solid #8B6914;border-radius:6px;padding:8px 12px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
-.admin-label{font-size:10px;color:#8B6914;letter-spacing:1px;text-transform:uppercase;font-weight:600}
-.reopen-badge{font-size:9px;padding:2px 6px;background:#3b2800;color:#FFD700;border:1px solid #8B6914;border-radius:3px;letter-spacing:.5px}
-.game-lock-toggle{font-size:9px;padding:2px 7px;border:1px solid #333;border-radius:3px;background:transparent;cursor:pointer;color:#555;font-family:'Oswald',sans-serif;font-weight:500;letter-spacing:.5px;transition:all .15s}
-.game-lock-toggle:hover{border-color:#8B6914;color:#FFD700}
-.game-lock-toggle.open{border-color:#4caf50;color:#4caf50;background:#0d3b1a}
-
-/* SPECIAL ADMIN */
-.special-admin-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
-.special-admin-item{background:#0d0d0d;border:1px solid #222;border-radius:5px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;gap:6px}
-.special-admin-name{font-size:12px;color:#aaa;font-weight:500}
-.special-admin-val{font-size:11px;color:#8B6914;flex:1;text-align:right;margin-right:8px}
+.pitem:active{background:#1a1a1a}
+.pitem.active-p{background:#1a1500;color:#FFD700;border-left:3px solid #FFD700}
+.back-btn{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#8B6914;cursor:pointer;margin-bottom:12px;background:none;border:none;font-family:'Oswald',sans-serif;padding:0}
+.pname-display{font-size:18px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#FFD700;margin-bottom:4px}
+.card-wrap{background:#111;border:1px solid #8B6914;border-radius:6px;padding:.75rem;overflow-x:auto;margin-bottom:.75rem}
+.saving{position:fixed;bottom:20px;right:16px;background:#1a1500;border:1px solid #8B6914;color:#FFD700;padding:7px 14px;border-radius:4px;font-size:11px;font-family:'Oswald',sans-serif;letter-spacing:1px;opacity:0;transition:opacity .3s;z-index:999;pointer-events:none}
+.saving.show{opacity:1}
+.loading-screen{position:fixed;inset:0;background:#0a0a0a;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:12px}
+.loading-screen p{color:#8B6914;font-size:13px;letter-spacing:2px;text-transform:uppercase}
+.spinner{width:36px;height:36px;border:2px solid #2a2a2a;border-top-color:#FFD700;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* countdown */
+.countdown-box{background:#0a0a1a;border:1px solid #1565c0;border-radius:8px;padding:12px 16px;margin-bottom:12px;text-align:center}
+.countdown-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#64b5f6;margin-bottom:6px}
+.countdown-timer{font-size:28px;font-weight:700;color:#FFD700;letter-spacing:3px;font-variant-numeric:tabular-nums}
+.countdown-sub{font-size:10px;color:#555;margin-top:4px;letter-spacing:1px}
+.countdown-box.urgent{border-color:#f44336;background:#1a0a0a}
+.countdown-box.urgent .countdown-label{color:#f44336}
+.countdown-box.urgent .countdown-timer{color:#f44336}
+/* modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem}
+.modal-box{background:#111;border:1px solid #8B6914;border-radius:8px;padding:1.5rem;width:100%;max-width:340px}
+.modal-box h2{font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#FFD700;margin-bottom:4px}
+.modal-box p{font-size:11px;color:#666;letter-spacing:1px;margin-bottom:1.2rem}
+.modal-box select,.modal-box input{width:100%;background:#0a0a0a;border:1px solid #444;color:#ccc;font-family:'Oswald',sans-serif;font-size:14px;padding:10px 12px;border-radius:4px;margin-bottom:10px;appearance:none}
+.modal-box select:focus,.modal-box input:focus{outline:none;border-color:#8B6914}
+.modal-btn{width:100%;padding:12px;background:linear-gradient(135deg,#8B6914,#FFD700);color:#000;font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border:none;border-radius:4px;cursor:pointer;margin-top:4px}
+.modal-cancel{width:100%;padding:10px;background:transparent;color:#555;font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:1px;text-transform:uppercase;border:1px solid #333;border-radius:4px;cursor:pointer;margin-top:6px}
+.modal-err{color:#f44336;font-size:11px;letter-spacing:.5px;margin-bottom:8px;display:none}
+/* records */
+.rec-card{background:#111;border:1px solid #2a2a2a;border-radius:6px;padding:1rem 1.1rem;margin-bottom:.75rem}
+.rec-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8B6914;margin-bottom:.75rem;font-weight:600}
+.rec-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a1a1a}
+.rec-row:last-child{border-bottom:none}
+.rec-name{font-size:14px;font-weight:600;color:#ccc}
+.rec-detail{font-size:12px;color:#666;margin-top:2px}
+.rec-pct{font-size:20px;font-weight:700}
+.rec-pct.high{color:#4caf50}.rec-pct.mid{color:#FFD700}.rec-pct.low{color:#f44336}
+.bar-bg{height:5px;background:#1a1a1a;border-radius:3px;margin-top:6px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .6s}
+.bar-fill.high{background:#4caf50}.bar-fill.mid{background:#FFD700}.bar-fill.low{background:#f44336}
+/* status badges na lista */
+.status-badge{font-size:10px;padding:2px 7px;border-radius:3px;font-weight:600;letter-spacing:.5px}
+.sb-done{background:#0d3b1a;color:#4caf50;border:1px solid #4caf50}
+.sb-edit{background:#1a1500;color:#FFD700;border:1px solid #8B6914}
+.sb-pending{background:#1a1a1a;color:#555;border:1px solid #333}
+.sb-locked{background:#3b0d0d;color:#f44336;border:1px solid #f44336}
 </style>
-
-<div class="app">
-<div class="wm">🏆</div>
-<div class="inner">
-<div class="header">
-  <h1>Os Donos das Bolas</h1>
-  <p>Bolão Copa do Mundo</p>
+</head>
+<body>
+<div class="loading-screen" id="loading">
+  <div style="font-size:48px">🏆</div>
+  <p>Carregando bolão...</p>
+  <div class="spinner"></div>
 </div>
 
-<!-- HOME -->
-<div id="screen-home">
-  <div class="home-screen">
-    <div class="home-trophy">🏆</div>
-    <div class="home-title">Os Donos das Bolas</div>
-    <div class="home-sub">Copa do Mundo 2026</div>
-    <button class="select-btn-big" onclick="showParticipantList()">👤 Selecione seu nome</button>
+<!-- Login Modal -->
+<div class="modal-overlay" id="login-modal" style="display:none">
+  <div class="modal-box">
+    <h2>Área Restrita</h2>
+    <p>Apenas administradores podem acessar esta área.</p>
+    <div class="modal-err" id="login-err">Senha incorreta.</div>
+    <select id="login-user">
+      <option value="">Selecione seu nome</option>
+      <option value="Pedro">Pedro</option>
+      <option value="Rosalves">Rosalves</option>
+    </select>
+    <input type="password" id="login-pass" placeholder="Senha" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="modal-btn" onclick="doLogin()">Entrar</button>
+    <button class="modal-cancel" onclick="closeLoginModal()">Cancelar</button>
   </div>
 </div>
 
-<!-- PARTICIPANT LIST -->
-<div id="screen-plist" style="display:none;padding:1rem">
-  <button class="back-btn" onclick="goHome()">← Voltar</button>
-  <div class="plist-wrap">
-    <div class="plist-header">⚽ Quem é você?</div>
-    <div id="plist-items"></div>
-  </div>
-</div>
-
-<!-- MAIN APP -->
-<div id="screen-main" style="display:none">
-  <div class="tabs">
-    <button class="tab active" onclick="showTab('palpites')">⚽ Palpites</button>
-    <button class="tab" onclick="showTab('especiais')">⭐ Especiais</button>
-    <button class="tab" onclick="showTab('resultados')">✓ Resultados</button>
-    <button class="tab" onclick="showTab('rank')">🏆 Rank</button>
-  </div>
-  <div id="tab-palpites" class="section active"></div>
-  <div id="tab-especiais" class="section"></div>
-  <div id="tab-resultados" class="section"></div>
-  <div id="tab-rank" class="section"></div>
-</div>
-</div>
-</div>
-
-<!-- MODAL ESPECIAIS -->
-<div id="modal-overlay" class="modal-overlay" style="display:none" onclick="closeModal(event)">
-<div class="modal-box" onclick="event.stopPropagation()">
-  <div class="modal-header">
-    <div>
-      <div class="modal-title" id="modal-title"></div>
-      <div class="modal-sub" id="modal-sub"></div>
+<div class="app" id="app" style="display:none">
+  <div class="wm">🏆</div>
+  <div class="inner">
+    <div class="header">
+      <h1>Os Donos das Bolas</h1>
+      <p>Bolão Copa do Mundo 2026</p>
+      <div class="header-admin" id="admin-bar" style="display:none">
+        <span>🔑 Admin: <span id="admin-name-display"></span></span>
+        <button onclick="logout()" style="background:none;border:1px solid #4caf50;color:#4caf50;font-family:'Oswald',sans-serif;font-size:10px;padding:2px 8px;border-radius:3px;cursor:pointer;letter-spacing:1px">SAIR</button>
+      </div>
     </div>
-    <button class="modal-close" onclick="closeModalDirect()">✕</button>
-  </div>
-  <div class="modal-body"><div class="team-grid" id="modal-team-grid"></div></div>
-  <div class="modal-footer">
-    <button class="btn btn-gold" style="width:100%;padding:10px" onclick="confirmSpecial()">✓ Confirmar palpite</button>
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('palpites')">⚽ Palpites</button>
+      <button class="tab" onclick="showTab('resultados')">✓ Resultados</button>
+      <button class="tab" onclick="showTab('rank')">🏆 Ranking</button>
+      <button class="tab" onclick="showTab('recordes')">⭐ Recordes</button>
+    </div>
+    <div id="tab-palpites" class="section active"></div>
+    <div id="tab-resultados" class="section"></div>
+    <div id="tab-rank" class="section"></div>
+    <div id="tab-recordes" class="section"></div>
   </div>
 </div>
-</div>
+<div class="saving" id="saving-toast">💾 Salvo!</div>
 
 <script>
 const FLAGS={
@@ -203,64 +186,64 @@ const FLAGS={
   "França":"🇫🇷","Senegal":"🇸🇳","Iraque":"🇮🇶","Noruega":"🇳🇴",
   "Argentina":"🇦🇷","Argélia":"🇩🇿","Áustria":"🇦🇹","Jordânia":"🇯🇴",
   "Portugal":"🇵🇹","RD Congo":"🇨🇩","Inglaterra":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","Croácia":"🇭🇷",
-  "Gana":"🇬🇭","Panamá":"🇵🇦","Uzbequistão":"🇺🇿","Colômbia":"🇨🇴"
+  "Gana":"🇬🇭","Panamá":"🇵🇦","Uzbequistão":"🇺🇿","Colômbia":"🇨🇴",
+  "Repescagem A":"🏳","Repescagem B":"🏳","Repescagem C":"🏳",
+  "Repescagem D":"🏳","Repescagem 1":"🏳","Repescagem 2":"🏳"
 };
 function F(t){return FLAGS[t]||'🏳';}
-const ALL_TEAMS=Object.keys(FLAGS);
 
+const ADMIN_PASSWORDS={Pedro:"pedro123",Rosalves:"rosalves123"};
 const PARTICIPANTS=["Pedro","Neto","Xavier","Macleiton","João Victor","Rosalves","Alexandre","Filipi","Matheus","Arruda","PH","Luís Eduardo","Luís Felipe","Elicom","João Antônio","Caio"];
-const IS_PEDRO=(p)=>p==="Pedro";
 
-// Game datetime map (Brazil local time BRT = UTC-3)
-// Format: ISO-like string in BRT
-const GAME_TIMES={
-  "g101":"2026-06-11T16:00","g102":"2026-06-11T23:00",
-  "g103":"2026-06-12T16:00","g104":"2026-06-12T22:00",
-  "g105":"2026-06-13T16:00","g106":"2026-06-13T19:00",
-  "g107":"2026-06-13T22:00","g108":"2026-06-14T01:00",
-  "g109":"2026-06-14T14:00","g110":"2026-06-14T17:00",
-  "g111":"2026-06-14T20:00","g112":"2026-06-14T23:00",
-  "g113":"2026-06-15T13:00","g114":"2026-06-15T16:00",
-  "g115":"2026-06-15T19:00","g116":"2026-06-15T22:00",
-  "g117":"2026-06-16T16:00","g118":"2026-06-16T19:00",
-  "g119":"2026-06-16T22:00","g120":"2026-06-17T01:00",
-  "g121":"2026-06-17T14:00","g122":"2026-06-17T17:00",
-  "g123":"2026-06-17T20:00","g124":"2026-06-17T23:00",
-  "g201":"2026-06-18T13:00","g202":"2026-06-18T16:00",
-  "g203":"2026-06-18T19:00","g204":"2026-06-18T22:00",
-  "g205":"2026-06-19T16:00","g206":"2026-06-19T19:00",
-  "g207":"2026-06-19T21:30","g208":"2026-06-20T01:00",
-  "g209":"2026-06-20T14:00","g210":"2026-06-20T17:00",
-  "g211":"2026-06-20T21:00","g212":"2026-06-21T01:00",
-  "g213":"2026-06-21T13:00","g214":"2026-06-21T16:00",
-  "g215":"2026-06-21T19:00","g216":"2026-06-21T22:00",
-  "g217":"2026-06-22T14:00","g218":"2026-06-22T18:00",
-  "g219":"2026-06-22T21:00","g220":"2026-06-23T00:00",
-  "g221":"2026-06-23T14:00","g222":"2026-06-23T17:00",
-  "g223":"2026-06-23T20:00","g224":"2026-06-23T23:00",
-  "g301":"2026-06-24T16:00","g302":"2026-06-24T16:00",
-  "g303":"2026-06-24T19:00","g304":"2026-06-24T19:00",
-  "g305":"2026-06-24T22:00","g306":"2026-06-24T22:00",
-  "g307":"2026-06-25T17:00","g308":"2026-06-25T17:00",
-  "g309":"2026-06-25T20:00","g310":"2026-06-25T20:00",
-  "g311":"2026-06-25T23:00","g312":"2026-06-25T23:00",
-  "g313":"2026-06-26T16:00","g314":"2026-06-26T16:00",
-  "g315":"2026-06-26T21:00","g316":"2026-06-26T21:00",
-  "g317":"2026-06-27T00:00","g318":"2026-06-27T00:00",
-  "g319":"2026-06-27T18:00","g320":"2026-06-27T18:00",
-  "g321":"2026-06-27T20:30","g322":"2026-06-27T20:30",
-  "g323":"2026-06-27T23:00","g324":"2026-06-27T23:00"
+// Horários em UTC-3 (Brasília). Rodada fecha 30min antes do 1º jogo, reabre 2h após o último.
+// Datas: new Date('2026-MM-DDTHH:MM:00-03:00')
+const ROUND_SCHEDULE = {
+  r1: {
+    closeAt:  new Date('2026-06-11T15:30:00-03:00'), // 30min antes de 16h
+    reopenAt: new Date('2026-06-18T01:00:00-03:00'), // 2h após 17/06 23h
+  },
+  r2: {
+    closeAt:  new Date('2026-06-18T12:30:00-03:00'), // 30min antes de 13h
+    reopenAt: new Date('2026-06-24T01:00:00-03:00'), // 2h após 23/06 23h
+  },
+  r3: {
+    closeAt:  new Date('2026-06-24T15:30:00-03:00'), // 30min antes de 16h
+    reopenAt: new Date('2026-06-28T01:00:00-03:00'), // 2h após 27/06 23h
+  }
 };
 
-function gameStarted(gid){
-  const t=GAME_TIMES[gid];
-  if(!t)return true; // unknown = treat as started
-  // parse as BRT (UTC-3)
-  const [date,time]=t.split('T');
-  const [y,m,d]=date.split('-').map(Number);
-  const [hh,mm]=(time||'00:00').split(':').map(Number);
-  const gameUTC=Date.UTC(y,m-1,d,hh+3,mm||0);
-  return Date.now()>=gameUTC;
+// Retorna o estado de tempo de uma rodada
+function getRoundTimeStatus(rid) {
+  const now = new Date();
+  const sched = ROUND_SCHEDULE[rid];
+  if (!sched) return { open: true, label: '' };
+  if (now < sched.closeAt) {
+    // Aberta — mosrtrar countdown para fechamento
+    const diff = sched.closeAt - now;
+    return { open: true, countdown: diff, label: 'palpites fecham em', urgent: diff < 3600000 };
+  }
+  if (now >= sched.closeAt && now < sched.reopenAt) {
+    return { open: false, label: 'Palpites encerrados — aguardando rodada' };
+  }
+  return { open: true, label: '' }; // reabriu para próxima rodada (não se aplica aqui)
+}
+
+// Verifica se palpites estão abertos para uma rodada (por tempo OU por encerramento manual)
+function canVote(rid) {
+  if (state.closed[rid]) return false; // já encerrada manualmente
+  const ts = getRoundTimeStatus(rid);
+  return ts.open;
+}
+
+function fmtCountdown(ms) {
+  if (ms <= 0) return '00:00:00';
+  const s = Math.floor(ms / 1000);
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  const pad = v => String(v).padStart(2,'0');
+  if (h > 0) return `${pad(h)}:${pad(m)}:${pad(sec)}`;
+  return `${pad(m)}:${pad(sec)}`;
 }
 
 const ROUNDS=[
@@ -344,311 +327,364 @@ const ROUNDS=[
 ]}
 ];
 
-const SPECIALS=[
-  {id:"campeao",label:"Campeão",icon:"🥇",max:1,desc:"Escolha 1 seleção"},
-  {id:"surpresa",label:"Surpresa",icon:"🌟",max:1,desc:"Escolha 1 seleção"},
-  {id:"deception",label:"Decepção",icon:"😤",max:1,desc:"Escolha 1 seleção"},
-  {id:"vai_longe",label:"Vai Longe",icon:"🚀",max:3,desc:"Escolha até 3 seleções"}
-];
+const FIREBASE_URL="https://donos-das-bolas-default-rtdb.firebaseio.com";
+const DB_KEY="bolao_donos_v1";
 
-let state={
-  votes:{},results:{},
-  closed:{r1:false,r2:false,r3:false},
-  unlocked:{r1:true,r2:false,r3:false},
-  gameReopened:{},  // {rid: {gid: true}} = game manually reopened by Pedro
-  specials:{},      // {participant: {campeao:"Brasil", surpresa:[], ...}}
-  specialLocked:{}, // {participant: {campeao:true, ...}}
-};
-try{let d=localStorage.getItem('bolao4_state');if(d)state=JSON.parse(d);}catch(e){}
-function save(){try{localStorage.setItem('bolao4_state',JSON.stringify(state));}catch(e){}}
+// Estado: votes, results, closed, unlocked, submitted (palpites enviados), drafts (rascunhos)
+let state={votes:{},results:{},closed:{r1:false,r2:false,r3:false},unlocked:{r1:true,r2:false,r3:false},submitted:{}};
+let loaded=false;
+let adminUser=null;
 
-let activeP=null;
-let activePTab='r1';
-let activeResTab='r1';
-let activeRankTab='all';
-let modalSpecial=null;
-let modalTempSel=[];
+// ── Auth ──────────────────────────────────────────────────────────────────────
+function isAdmin(){return adminUser!==null;}
+function showLoginModal(cb){
+  window._loginCb=cb||null;
+  document.getElementById('login-modal').style.display='flex';
+  document.getElementById('login-err').style.display='none';
+  document.getElementById('login-pass').value='';
+}
+function closeLoginModal(){document.getElementById('login-modal').style.display='none';}
+function doLogin(){
+  const u=document.getElementById('login-user').value;
+  const p=document.getElementById('login-pass').value;
+  if(!u){document.getElementById('login-err').textContent='Selecione seu nome.';document.getElementById('login-err').style.display='block';return;}
+  if(ADMIN_PASSWORDS[u]===p){
+    adminUser=u;
+    document.getElementById('login-modal').style.display='none';
+    document.getElementById('admin-bar').style.display='flex';
+    document.getElementById('admin-name-display').textContent=u;
+    if(window._loginCb)window._loginCb();
+    renderCurrent();
+  } else {
+    document.getElementById('login-err').textContent='Senha incorreta.';
+    document.getElementById('login-err').style.display='block';
+  }
+}
+function logout(){adminUser=null;document.getElementById('admin-bar').style.display='none';renderCurrent();}
 
-// ---- NAVIGATION ----
-function goHome(){
-  document.getElementById('screen-home').style.display='';
-  document.getElementById('screen-plist').style.display='none';
-  document.getElementById('screen-main').style.display='none';
-  activeP=null;
+// ── Firebase ──────────────────────────────────────────────────────────────────
+async function loadState(){
+  try{
+    const res=await fetch(`${FIREBASE_URL}/${DB_KEY}.json`);
+    if(res.ok){
+      const d=await res.json();
+      if(d) state=Object.assign({votes:{},results:{},closed:{r1:false,r2:false,r3:false},unlocked:{r1:true,r2:false,r3:false},submitted:{}},d);
+    }
+  }catch(e){console.warn('Firebase indisponível',e);}
+  loaded=true;
+  // Auto-marcar como enviado quem já tem todos os jogos votados
+  if(!state.submitted)state.submitted={};
+  let autoSaved=false;
+  ROUNDS.forEach(r=>{
+    const votes=state.votes[r.id]||{};
+    PARTICIPANTS.forEach(p=>{
+      const pv=votes[p]||{};
+      const done=r.games.filter(g=>pv[g.id]).length;
+      if(done===r.games.length){
+        if(!state.submitted[p])state.submitted[p]={};
+        if(!state.submitted[p][r.id]){state.submitted[p][r.id]=true;autoSaved=true;}
+      }
+    });
+  });
+  if(autoSaved)save();
+  document.getElementById('loading').style.display='none';
+  document.getElementById('app').style.display='block';
+  renderCurrent();
+  startCountdownTick();
 }
-function showParticipantList(){
-  document.getElementById('screen-home').style.display='none';
-  document.getElementById('screen-plist').style.display='';
-  document.getElementById('screen-main').style.display='none';
-  renderPList();
-}
-function renderPList(){
-  const scores=computeScores();
-  const c=document.getElementById('plist-items');
-  c.innerHTML=PARTICIPANTS.map(p=>{
-    const totalOpen=ROUNDS.filter(r=>state.unlocked[r.id]).reduce((s,r)=>s+r.games.length,0);
-    const done=ROUNDS.filter(r=>state.unlocked[r.id]).reduce((s,r)=>{
-      const pv=(state.votes[r.id]&&state.votes[r.id][p])||{};
-      return s+Object.values(pv).filter(Boolean).length;
-    },0);
-    const pts=scores[p]?scores[p].total:0;
-    const ptsStr=ROUNDS.some(r=>state.closed[r.id])&&pts>0?`<span class="pts">${pts}pts</span>`:'';
-    return `<div class="pitem" onclick="selectP('${p}')">
-      <span style="font-size:15px;font-weight:600;letter-spacing:1px">${p}${IS_PEDRO(p)?` <span style="font-size:9px;color:#8B6914;letter-spacing:1px">★ ADMIN</span>`:''}</span>
-      <span style="display:flex;align-items:center;gap:8px">
-        <span style="font-size:10px;color:#444;letter-spacing:.3px">${done}/${totalOpen}</span>
-        ${ptsStr}
-      </span>
-    </div>`;
-  }).join('');
-}
-function selectP(p){
-  activeP=p;
-  // Auto select active open round
-  const openRound=ROUNDS.find(r=>state.unlocked[r.id]&&!state.closed[r.id]);
-  activePTab=openRound?openRound.id:(ROUNDS.find(r=>state.unlocked[r.id])||ROUNDS[0]).id;
-  document.getElementById('screen-plist').style.display='none';
-  document.getElementById('screen-main').style.display='';
-  showTab('palpites');
+let saveTimer=null;
+async function save(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(async()=>{
+    try{
+      await fetch(`${FIREBASE_URL}/${DB_KEY}.json`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(state)});
+      const t=document.getElementById('saving-toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600);
+    }catch(e){console.warn('Erro ao salvar',e);}
+  },500);
 }
 
-// ---- TABS ----
+// ── Countdown tick ────────────────────────────────────────────────────────────
+let tickInterval=null;
+function startCountdownTick(){
+  if(tickInterval)clearInterval(tickInterval);
+  tickInterval=setInterval(()=>{
+    // Atualiza só o timer sem re-renderizar tudo
+    const el=document.getElementById('countdown-timer-val');
+    const ridEl=document.getElementById('countdown-timer-rid');
+    if(!el||!ridEl)return;
+    const rid=ridEl.value;
+    const ts=getRoundTimeStatus(rid);
+    if(ts.countdown!=null){
+      el.textContent=fmtCountdown(ts.countdown);
+      const box=document.getElementById('countdown-box');
+      if(box&&ts.urgent)box.classList.add('urgent');
+    }
+  },1000);
+}
+
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+let activeP=null,showingPList=true,activePTab='r1',activeResTab='r1',activeRankTab='all',activeRecTab='all',currentTab='palpites';
+// rascunho local por pessoa+rodada (antes de "Enviar")
+let draft={}; // {pid: {rid: {gid: val}}}
+
+function renderCurrent(){
+  if(currentTab==='palpites')renderPalpites();
+  else if(currentTab==='resultados')renderResultados();
+  else if(currentTab==='rank')renderRank();
+  else renderRecordes();
+}
 function showTab(t){
-  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['palpites','especiais','resultados','rank'][i]===t));
+  currentTab=t;
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['palpites','resultados','rank','recordes'][i]===t));
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById('tab-'+t).classList.add('active');
-  if(t==='palpites')renderPalpites();
-  if(t==='especiais')renderEspeciais();
-  if(t==='resultados')renderResultados();
-  if(t==='rank')renderRank();
+  window.scrollTo({top:0,behavior:'smooth'});
+  renderCurrent();
 }
 
-// ---- PALPITES ----
-function isGameOpen(rid,gid){
-  // If round not closed at all, game is open
-  if(!state.closed[rid])return true;
-  // Round closed: only open if Pedro manually reopened AND game hasn't started
-  if(state.gameReopened[rid]&&state.gameReopened[rid][gid]&&!gameStarted(gid))return true;
-  return false;
+// ── Helpers de palpites ───────────────────────────────────────────────────────
+function isSubmitted(p,rid){
+  return !!(state.submitted&&state.submitted[p]&&state.submitted[p][rid]);
+}
+function getDraft(p,rid){
+  if(!draft[p])draft[p]={};
+  if(!draft[p][rid]){
+    // inicializa com palpites já enviados, se houver
+    const saved=(state.votes[rid]&&state.votes[rid][p])||{};
+    draft[p][rid]=Object.assign({},saved);
+  }
+  return draft[p][rid];
 }
 
+// ── Palpites ─ lista ──────────────────────────────────────────────────────────
 function renderPalpites(){
   const c=document.getElementById('tab-palpites');
-  const r=ROUNDS.find(x=>x.id===activePTab)||ROUNDS[0];
-  if(!state.votes[r.id])state.votes[r.id]={};
-  if(!state.votes[r.id][activeP])state.votes[r.id][activeP]={};
-  const pv=state.votes[r.id][activeP];
-  const done=r.games.filter(g=>pv[g.id]).length;
-
-  let html=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-    <button class="back-btn" onclick="goBackToList()">← ${activeP}</button>
-    <span class="pill ${done===r.games.length?'pill-ok':'pill-no'}">${done}/${r.games.length}</span>
-  </div>`;
-
-  const roundBtns=ROUNDS.map(r2=>{
-    const ul=state.unlocked[r2.id];
-    const cl=state.closed[r2.id];
-    return `<button class="rtab${activePTab===r2.id?' active':''}" onclick="selPTab('${r2.id}')" ${!ul?'disabled':''}>${r2.name}${cl?' 🔒':''}</button>`;
-  }).join('');
-  html+=`<div class="round-tab-row">${roundBtns}</div>`;
-
-  // Pedro admin bar for reopening
-  if(IS_PEDRO(activeP)&&state.closed[r.id]){
-    const canReopen=r.games.some(g=>!gameStarted(g.id));
-    html+=`<div class="admin-bar">
-      <span class="admin-label">★ Admin — Reabrir palpites</span>
-      <span class="reopen-badge">Apenas jogos não iniciados</span>
-    </div>`;
-  }
-
-  r.games.forEach(g=>{
-    const sel=pv[g.id]||'';
-    const res=state.results[r.id]&&state.results[r.id][g.id];
-    const open=isGameOpen(r.id,g.id);
-    const started=gameStarted(g.id);
-    const roundClosed=state.closed[r.id];
-    const reopened=state.gameReopened[r.id]&&state.gameReopened[r.id][g.id];
-
-    const bc=(v,base)=>{
-      let cls=base||'vote-btn';
-      if(roundClosed&&res){
-        if(sel===v&&v===res)return cls+' correct';
-        if(sel===v&&v!==res)return cls+' wrong';
-        if(v===res)return cls+' sel';
-        return cls;
-      }
-      return cls+(sel===v?' sel':'');
-    };
-
-    // parcial: who voted what
-    const allVotes=PARTICIPANTS.map(pp=>{
-      const ppv=(state.votes[r.id]&&state.votes[r.id][pp])||{};
-      return{name:pp,vote:ppv[g.id]||''};
-    });
-    const homeVoters=allVotes.filter(x=>x.vote==='home').map(x=>x.name.split(' ')[0]);
-    const drawVoters=allVotes.filter(x=>x.vote==='draw').map(x=>x.name.split(' ')[0]);
-    const awayVoters=allVotes.filter(x=>x.vote==='away').map(x=>x.name.split(' ')[0]);
-
-    const metaRight=IS_PEDRO(activeP)&&roundClosed
-      ?`<button class="game-lock-toggle${reopened&&!started?' open':''}" onclick="toggleReopen('${r.id}','${g.id}')">${reopened&&!started?'🔓 ABERTO':'🔒 REABRIR'}</button>`
-      :(started&&roundClosed?'<span style="font-size:9px;color:#555">em andamento</span>':'');
-
-    html+=`<div class="game-block">
-      <div class="game-meta"><span>${g.time} · Grupo ${g.group}</span>${metaRight}</div>
-      <div class="vote-row">
-        <button class="${bc('home','vote-btn')}" onclick="${open?`setVote('${r.id}','${g.id}','home')`:''}">
-          <span style="font-size:16px">${F(g.home)}</span>
-          <span style="font-size:9px;letter-spacing:.3px">${g.home}</span>
-        </button>
-        <button class="${bc('draw','vote-draw')}" onclick="${open?`setVote('${r.id}','${g.id}','draw')`:''}" style="font-size:8px;padding:6px 4px">EMPATE</button>
-        <button class="${bc('away','vote-btn')}" onclick="${open?`setVote('${r.id}','${g.id}','away')`:''}" style="flex-direction:row-reverse">
-          <span style="font-size:16px">${F(g.away)}</span>
-          <span style="font-size:9px;letter-spacing:.3px">${g.away}</span>
-        </button>
-      </div>
-      <div class="parcial-row">
-        <div class="parcial-cell">${homeVoters.length?`<span style="color:#8B6914;font-size:8px">${homeVoters.join(', ')}</span>`:''}</div>
-        <div class="parcial-cell center-cell">${drawVoters.length?`<span style="color:#8B6914;font-size:8px">${drawVoters.join(', ')}</span>`:''}</div>
-        <div class="parcial-cell right-cell">${awayVoters.length?`<span style="color:#8B6914;font-size:8px">${awayVoters.join(', ')}</span>`:''}</div>
-      </div>
-    </div>`;
-  });
-  c.innerHTML=html;
-}
-function goBackToList(){
-  document.getElementById('screen-main').style.display='none';
-  document.getElementById('screen-plist').style.display='';
-  renderPList();
-}
-function selPTab(rid){activePTab=rid;renderPalpites();}
-function setVote(rid,gid,val){
-  if(!isGameOpen(rid,gid))return;
-  if(!state.votes[rid])state.votes[rid]={};
-  if(!state.votes[rid][activeP])state.votes[rid][activeP]={};
-  state.votes[rid][activeP][gid]=val;
-  save();renderPalpites();
-}
-function toggleReopen(rid,gid){
-  if(!IS_PEDRO(activeP))return;
-  if(gameStarted(gid)){alert('Este jogo já começou — não é possível reabrir.');return;}
-  if(!state.gameReopened[rid])state.gameReopened[rid]={};
-  state.gameReopened[rid][gid]=!state.gameReopened[rid][gid];
-  save();renderPalpites();
+  if(!loaded){c.innerHTML='<div class="empty">Carregando...</div>';return;}
+  if(showingPList||!activeP){renderPList(c);}
+  else{renderPalpiteForm(c);}
 }
 
-// ---- ESPECIAIS ----
-function renderEspeciais(){
-  const c=document.getElementById('tab-especiais');
-  let html=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-    <button class="back-btn" onclick="goBackToList()">← ${activeP}</button>
-  </div>
-  <p style="font-size:10px;color:#555;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Palpites especiais — enviados uma vez, não entram no rank de rodadas</p>
-  <div class="special-grid">`;
+function renderPList(c){
+  const scored=computeScores();
+  // Rodada aberta atual
+  const activeRound=ROUNDS.find(r=>state.unlocked[r.id]&&!state.closed[r.id])||ROUNDS[0];
+  const rid=activeRound.id;
 
-  SPECIALS.forEach(sp=>{
-    const locked=state.specialLocked[activeP]&&state.specialLocked[activeP][sp.id];
-    const spData=(state.specials[activeP]&&state.specials[activeP][sp.id])||[];
-    const arr=Array.isArray(spData)?spData:[spData].filter(Boolean);
-    html+=`<div class="special-card${locked?' done':''}" onclick="openSpecial('${sp.id}')">
-      ${locked?`<div class="special-done-badge">✓ ENVIADO</div>`:''}
-      <div class="special-icon">${sp.icon}</div>
-      <div class="special-label">${sp.label}</div>
-      <div class="special-selected">${arr.length?arr.map(t=>`${F(t)} ${t}`).join('<br>'):'Toque para palpitar'}</div>
+  let html=`<div class="participant-modal"><div class="plist-header">⚽ Selecione seu nome</div>`;
+  PARTICIPANTS.forEach(p=>{
+    const esc=p.replace(/'/g,"\\'");
+    const submitted=isSubmitted(p,rid);
+    const pvSaved=(state.votes[rid]&&state.votes[rid][p])||{};
+    const doneCount=Object.values(pvSaved).filter(Boolean).length;
+    const total=activeRound.games.length;
+    const pts=scored[p]?scored[p].total:0;
+    const cv=canVote(rid);
+
+    let badge='';
+    if(state.closed[rid]){
+      badge=`<span class="status-badge sb-locked">encerrada</span>`;
+    } else if(!cv){
+      badge=`<span class="status-badge sb-locked">⏰ fechado</span>`;
+    } else if(submitted){
+      badge=`<span class="status-badge sb-done">✓ enviado</span>`;
+    } else if(doneCount>0){
+      badge=`<span class="status-badge sb-edit">rascunho ${doneCount}/${total}</span>`;
+    } else {
+      badge=`<span class="status-badge sb-pending">pendente</span>`;
+    }
+
+    html+=`<div class="pitem" onclick="selectP('${esc}')">
+      <span style="font-size:15px;font-weight:600;letter-spacing:1px">${p}</span>
+      <span style="display:flex;align-items:center;gap:8px">
+        ${badge}
+        ${pts>0?`<span class="pts">${pts}pts</span>`:''}
+      </span>
     </div>`;
   });
   html+=`</div>`;
-
-  // Pedro admin: manage others' specials
-  if(IS_PEDRO(activeP)){
-    html+=`<div style="margin-top:1rem"><p class="admin-label" style="font-size:10px;color:#8B6914;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">★ Admin — Gerenciar palpites especiais de outros</p>`;
-    PARTICIPANTS.filter(p=>p!=='Pedro').forEach(p=>{
-      html+=`<div class="card" style="padding:.75rem 1rem;margin-bottom:.5rem">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-          <span style="font-size:13px;font-weight:600;color:#ccc">${p}</span>
-          <button class="btn" style="font-size:9px;padding:3px 8px" onclick="resetAllSpecials('${p}')">Resetar todos</button>
-        </div>
-        <div class="special-admin-list">
-          ${SPECIALS.map(sp=>{
-            const locked=state.specialLocked[p]&&state.specialLocked[p][sp.id];
-            const spData=(state.specials[p]&&state.specials[p][sp.id])||[];
-            const arr=Array.isArray(spData)?spData:[spData].filter(Boolean);
-            return `<div class="special-admin-item">
-              <span class="special-admin-name">${sp.icon} ${sp.label}</span>
-              <span class="special-admin-val">${arr.length?arr.map(t=>`${F(t)} ${t}`).join(', '):'-'}</span>
-              ${locked?`<button class="btn btn-warn" style="font-size:9px;padding:2px 8px" onclick="unlockSpecial('${p}','${sp.id}')">🔓 Reabrir</button>`:`<span style="font-size:9px;color:#444">aberto</span>`}
-            </div>`;
-          }).join('')}
-        </div>
-      </div>`;
-    });
-    html+=`</div>`;
-  }
   c.innerHTML=html;
 }
 
-function openSpecial(spId){
-  const sp=SPECIALS.find(s=>s.id===spId);
-  if(!sp)return;
-  const locked=state.specialLocked[activeP]&&state.specialLocked[activeP][spId];
-  if(locked&&!IS_PEDRO(activeP)){alert('Você já enviou este palpite. Apenas o Pedro pode reabrir.');return;}
-  modalSpecial=spId;
-  const cur=(state.specials[activeP]&&state.specials[activeP][spId])||[];
-  modalTempSel=Array.isArray(cur)?[...cur]:(cur?[cur]:[]);
-  document.getElementById('modal-title').textContent=`${sp.icon} ${sp.label}`;
-  document.getElementById('modal-sub').textContent=sp.desc+(sp.max>1?` (máx ${sp.max})`:'');
-  const grid=document.getElementById('modal-team-grid');
-  grid.innerHTML=ALL_TEAMS.map(t=>`
-    <div class="team-item${modalTempSel.includes(t)?' sel':''}" onclick="toggleTeamModal('${t}')">
-      <span class="team-flag">${F(t)}</span>
-      <span class="team-name">${t}</span>
-    </div>`).join('');
-  document.getElementById('modal-overlay').style.display='flex';
-}
-function toggleTeamModal(t){
-  const sp=SPECIALS.find(s=>s.id===modalSpecial);
-  if(modalTempSel.includes(t)){
-    modalTempSel=modalTempSel.filter(x=>x!==t);
-  } else {
-    if(modalTempSel.length>=sp.max){modalTempSel.shift();}
-    modalTempSel.push(t);
-  }
-  const items=document.querySelectorAll('.team-item');
-  items.forEach(el=>{
-    const name=el.querySelector('.team-name').textContent;
-    el.classList.toggle('sel',modalTempSel.includes(name));
-  });
-}
-function confirmSpecial(){
-  if(!modalTempSel.length){alert('Selecione pelo menos uma seleção.');return;}
-  const sp=SPECIALS.find(s=>s.id===modalSpecial);
-  if(!state.specials[activeP])state.specials[activeP]={};
-  state.specials[activeP][modalSpecial]=sp.max===1?modalTempSel[0]:[...modalTempSel];
-  if(!state.specialLocked[activeP])state.specialLocked[activeP]={};
-  state.specialLocked[activeP][modalSpecial]=true;
-  save();closeModalDirect();renderEspeciais();
-}
-function closeModal(e){if(e.target===document.getElementById('modal-overlay'))closeModalDirect();}
-function closeModalDirect(){document.getElementById('modal-overlay').style.display='none';modalSpecial=null;modalTempSel=[];}
-function unlockSpecial(p,spId){
-  if(!state.specialLocked[p])return;
-  state.specialLocked[p][spId]=false;
-  save();renderEspeciais();
-}
-function resetAllSpecials(p){
-  if(!confirm(`Resetar todos os palpites especiais de ${p}?`))return;
-  state.specialLocked[p]={};
-  state.specials[p]={};
-  save();renderEspeciais();
+function selectP(p){
+  activeP=p;showingPList=false;
+  const open=ROUNDS.find(r=>state.unlocked[r.id]&&!state.closed[r.id]);
+  activePTab=open?open.id:(ROUNDS.find(r=>state.unlocked[r.id])||ROUNDS[0]).id;
+  renderPalpites();
 }
 
-// ---- RESULTADOS ----
+// ── Palpites ─ formulário ─────────────────────────────────────────────────────
+function renderPalpiteForm(c){
+  const r=ROUNDS.find(x=>x.id===activePTab)||ROUNDS[0];
+  const rid=r.id;
+  const cv=canVote(rid);
+  const submitted=isSubmitted(activeP,rid);
+  const roundClosed=state.closed[rid];
+  const isEditable = cv && !submitted && !roundClosed;
+  const isViewOnly = roundClosed || (!cv && submitted) || (!cv && !submitted);
+
+  // Se está editando (enviado mas ainda aberto): usa rascunho a partir do enviado
+  const pv = isEditable ? getDraft(activeP,rid) : ((state.votes[rid]&&state.votes[rid][activeP])||{});
+
+  const done=r.games.filter(g=>pv[g.id]).length;
+  const total=r.games.length;
+  const allDone=done===total;
+
+  const ts=getRoundTimeStatus(rid);
+
+  let html=`<button class="back-btn" onclick="goBack()">← Voltar</button>`;
+  html+=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+    <div class="pname-display">${activeP}</div>
+    <span class="pill ${allDone?'pill-ok':'pill-no'}">${done}/${total}</span>
+  </div>`;
+
+  // Abas de rodada
+  const roundBtns=ROUNDS.map(r2=>{
+    const ul=state.unlocked[r2.id];
+    return `<button class="rtab${activePTab===r2.id?' active':''}" onclick="selectPTab('${r2.id}')" ${!ul?'disabled':''}>${r2.name}</button>`;
+  }).join('');
+  html+=`<div class="round-tab-row">${roundBtns}</div>`;
+
+  // Countdown
+  if(!roundClosed && ts.countdown!=null){
+    html+=`<div class="countdown-box${ts.urgent?' urgent':''}" id="countdown-box">
+      <input type="hidden" id="countdown-timer-rid" value="${rid}">
+      <div class="countdown-label">⏰ ${ts.label}</div>
+      <div class="countdown-timer" id="countdown-timer-val">${fmtCountdown(ts.countdown)}</div>
+      <div class="countdown-sub">Após esse horário os palpites serão bloqueados automaticamente</div>
+    </div>`;
+  }
+
+  // Status notices
+  if(roundClosed){
+    html+=`<div class="notice notice-warn">🔒 Rodada encerrada — apenas consulta.</div>`;
+  } else if(!cv){
+    html+=`<div class="notice notice-err">⏰ Palpites fechados para esta rodada.</div>`;
+  } else if(submitted){
+    html+=`<div class="notice notice-ok">✅ Palpite enviado! Você pode editar até 30 min antes do 1º jogo.</div>`;
+  }
+
+  // Jogos
+  r.games.forEach(g=>{
+    const sel=pv[g.id]||'';
+    const resVal=state.results[rid]&&state.results[rid][g.id];
+    const dis = isViewOnly ? 'disabled' : '';
+
+    const bc=(v)=>{
+      const base=v==='draw'?'vote-draw':'vote-btn';
+      if((roundClosed||!cv)&&resVal){
+        if(sel===v&&v===resVal)return base+' correct';
+        if(sel===v&&v!==resVal)return base+' wrong';
+        if(v===resVal)return base+' sel';
+        return base;
+      }
+      return base+(sel===v?' sel':'');
+    };
+
+    html+=`<div class="game-block">
+      <div class="game-meta">${g.time} · Grupo ${g.group}</div>
+      <div class="vote-row">
+        <button class="${bc('home')}" ${dis} onclick="setDraft('${rid}','${g.id}','home')">
+          <span class="fl">${F(g.home)}</span><span class="tn">${g.home}</span>
+        </button>
+        <button class="${bc('draw')}" ${dis} onclick="setDraft('${rid}','${g.id}','draw')">EMP</button>
+        <button class="${bc('away')}" ${dis} onclick="setDraft('${rid}','${g.id}','away')">
+          <span class="fl">${F(g.away)}</span><span class="tn">${g.away}</span>
+        </button>
+      </div>
+    </div>`;
+  });
+
+  // Botão enviar / editar
+  if(!roundClosed && cv){
+    if(!submitted){
+      html+=`<button class="btn-gold" ${!allDone?'disabled':''} onclick="submitPalpite('${rid}')">
+        ${allDone?'✅ Enviar Palpite':'⚽ Preencha todos os jogos para enviar'}
+      </button>`;
+      if(!allDone)html+=`<p style="font-size:11px;color:#555;text-align:center;margin-top:8px">${done} de ${total} jogos preenchidos</p>`;
+    } else {
+      html+=`<button class="btn-outline" onclick="editPalpite('${rid}')">✏️ Editar Palpite</button>`;
+    }
+  }
+
+  c.innerHTML=html;
+  startCountdownTick();
+}
+
+function goBack(){showingPList=true;activeP=null;renderPalpites();}
+function selectPTab(rid){activePTab=rid;renderPalpites();}
+
+function setDraft(rid,gid,val){
+  if(!canVote(rid)||isSubmitted(activeP,rid)||state.closed[rid])return;
+  const d=getDraft(activeP,rid);
+  d[gid]=val;
+  renderPalpites();
+}
+
+function submitPalpite(rid){
+  const d=getDraft(activeP,rid);
+  const r=ROUNDS.find(x=>x.id===rid);
+  if(r.games.some(g=>!d[g.id]))return;
+  if(!state.votes[rid])state.votes[rid]={};
+  state.votes[rid][activeP]=Object.assign({},d);
+  if(!state.submitted)state.submitted={};
+  if(!state.submitted[activeP])state.submitted[activeP]={};
+  state.submitted[activeP][rid]=true;
+  save();
+  renderPalpites();
+}
+
+function editPalpite(rid){
+  if(!canVote(rid))return;
+  // Reativa edição: desmarca enviado e copia palpite salvo para rascunho
+  if(!state.submitted[activeP])return;
+  delete state.submitted[activeP][rid];
+  // rascunho já tem os dados, só re-renderiza
+  renderPalpites();
+}
+
+// ── Resultados ────────────────────────────────────────────────────────────────
 function renderResultados(){
   const c=document.getElementById('tab-resultados');
+  if(!loaded){c.innerHTML='<div class="empty">Carregando...</div>';return;}
   const roundBtns=ROUNDS.map(r=>`<button class="rtab${activeResTab===r.id?' active':''}" onclick="selResTab('${r.id}')">${r.name}</button>`).join('');
-  let html=`<div style="margin-bottom:8px;font-size:11px;color:#555;letter-spacing:.5px">Acesso geral para inserir resultados reais dos jogos.</div><div class="round-tab-row">${roundBtns}</div><div id="res-body"></div>`;
-  c.innerHTML=html;renderResBody();
+
+  if(!isAdmin()){
+    c.innerHTML=`
+      <div class="notice notice-warn">🔒 Apenas Pedro e Rosalves podem lançar resultados.
+        <button onclick="showLoginModal(()=>showTab('resultados'))" style="margin-left:10px;background:none;border:1px solid #8B6914;color:#FFD700;font-family:'Oswald',sans-serif;font-size:11px;padding:3px 10px;border-radius:3px;cursor:pointer;letter-spacing:1px">ENTRAR</button>
+      </div>
+      <div class="round-tab-row">${roundBtns}</div>
+      <div id="res-body"></div>`;
+    renderResBodyView();
+    return;
+  }
+  c.innerHTML=`<div class="round-tab-row">${roundBtns}</div><div id="res-body"></div>`;
+  renderResBody();
 }
 function selResTab(rid){activeResTab=rid;renderResultados();}
+
+function renderResBodyView(){
+  const c=document.getElementById('res-body');if(!c)return;
+  const r=ROUNDS.find(x=>x.id===activeResTab);
+  const rr=(state.results[r.id])||{};
+  let html='';
+  if(!Object.keys(rr).length){html=`<div class="empty">Nenhum resultado lançado ainda.</div>`;c.innerHTML=html;return;}
+  r.games.forEach(g=>{
+    const sel=rr[g.id]||'';
+    if(!sel)return;
+    html+=`<div class="game-block">
+      <div class="game-meta">${g.time} · Grupo ${g.group}</div>
+      <div style="font-size:13px;font-weight:600;color:#eee;margin-bottom:8px">${F(g.home)} ${g.home} vs ${g.away} ${F(g.away)}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="result-btn${sel==='home'?' sel':''}" disabled>${F(g.home)} ${g.home}</button>
+        <button class="result-btn${sel==='draw'?' sel':''}" disabled>Empate</button>
+        <button class="result-btn${sel==='away'?' sel':''}" disabled>${F(g.away)} ${g.away}</button>
+      </div>
+    </div>`;
+  });
+  c.innerHTML=html||`<div class="empty">Nenhum resultado lançado ainda.</div>`;
+}
+
 function renderResBody(){
   const c=document.getElementById('res-body');if(!c)return;
   const r=ROUNDS.find(x=>x.id===activeResTab);
@@ -656,30 +692,30 @@ function renderResBody(){
   const rr=state.results[r.id];
   const locked=state.closed[r.id];
   let html='';
-  if(locked)html+=`<div class="locked-notice">🔒 Rodada encerrada — resultados confirmados.</div>`;
+  if(locked)html+=`<div class="notice notice-ok">✅ Rodada encerrada — você ainda pode corrigir resultados individuais.</div>`;
   r.games.forEach(g=>{
     const sel=rr[g.id]||'';
     html+=`<div class="game-block">
-      <div class="game-meta"><span>${g.time} · Grupo ${g.group}</span></div>
-      <div style="font-size:13px;font-weight:600;color:#eee;margin-bottom:7px">${F(g.home)} ${g.home} <span style="color:#333;font-weight:400">vs</span> ${g.away} ${F(g.away)}</div>
-      <div style="display:flex;gap:5px;flex-wrap:wrap">
-        <button class="result-btn${sel==='home'?' sel':''}" onclick="${locked?'':'setResult(\''+r.id+'\',\''+g.id+'\',\'home\')'}">${F(g.home)} ${g.home}</button>
-        <button class="result-btn${sel==='draw'?' sel':''}" onclick="${locked?'':'setResult(\''+r.id+'\',\''+g.id+'\',\'draw\')'}">Empate</button>
-        <button class="result-btn${sel==='away'?' sel':''}" onclick="${locked?'':'setResult(\''+r.id+'\',\''+g.id+'\',\'away\')'}">${F(g.away)} ${g.away}</button>
+      <div class="game-meta">${g.time} · Grupo ${g.group}</div>
+      <div style="font-size:13px;font-weight:600;color:#eee;margin-bottom:8px">${F(g.home)} ${g.home} vs ${g.away} ${F(g.away)}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="result-btn${sel==='home'?' sel':''}" onclick="setResult('${r.id}','${g.id}','home')">${F(g.home)} ${g.home}</button>
+        <button class="result-btn${sel==='draw'?' sel':''}" onclick="setResult('${r.id}','${g.id}','draw')">Empate</button>
+        <button class="result-btn${sel==='away'?' sel':''}" onclick="setResult('${r.id}','${g.id}','away')">${F(g.away)} ${g.away}</button>
       </div>
     </div>`;
   });
   const allFilled=r.games.every(g=>rr[g.id]);
   if(!locked){
-    html+=`<button class="btn btn-green" style="width:100%;margin-top:8px;padding:11px" ${!allFilled?'disabled':''} onclick="closeRound('${r.id}')">▶ Gerar Resultado — ${r.name}</button>`;
-    if(!allFilled)html+=`<p style="font-size:10px;color:#444;text-align:center;margin-top:5px;letter-spacing:.5px">Preencha todos os resultados para gerar.</p>`;
+    html+=`<button class="btn-green" ${!allFilled?'disabled':''} onclick="closeRound('${r.id}')">▶ Encerrar ${r.name} e gerar pontuação</button>`;
+    if(!allFilled)html+=`<p style="font-size:11px;color:#555;text-align:center;margin-top:6px">Preencha todos os resultados para encerrar.</p>`;
   }
   c.innerHTML=html;
 }
 function setResult(rid,gid,val){
-  if(state.closed[rid])return;
   if(!state.results[rid])state.results[rid]={};
-  state.results[rid][gid]=val;
+  state.results[rid][gid]=state.results[rid][gid]===val?undefined:val;
+  if(state.results[rid][gid]===undefined)delete state.results[rid][gid];
   save();renderResBody();
 }
 function closeRound(rid){
@@ -689,7 +725,7 @@ function closeRound(rid){
   save();renderResultados();showTab('rank');
 }
 
-// ---- RANK ----
+// ── Scores ────────────────────────────────────────────────────────────────────
 function computeScores(){
   const sc={};
   PARTICIPANTS.forEach(p=>sc[p]={total:0,byRound:{}});
@@ -697,27 +733,25 @@ function computeScores(){
     const res=state.results[r.id]||{};
     const votes=state.votes[r.id]||{};
     PARTICIPANTS.forEach(p=>{
-      const pv=votes[p]||{};
-      let pts=0;
+      const pv=votes[p]||{};let pts=0;
       r.games.forEach(g=>{if(res[g.id]&&pv[g.id]===res[g.id])pts++;});
-      sc[p].byRound[r.id]=pts;
-      sc[p].total+=pts;
+      sc[p].byRound[r.id]=pts;sc[p].total+=pts;
     });
   });
   return sc;
 }
+
+// ── Ranking ───────────────────────────────────────────────────────────────────
 function renderRank(){
   const c=document.getElementById('tab-rank');
+  if(!loaded){c.innerHTML='<div class="empty">Carregando...</div>';return;}
   const scores=computeScores();
   const closedRounds=ROUNDS.filter(r=>state.closed[r.id]);
   const tabBtns=[`<button class="rtab${activeRankTab==='all'?' active':''}" onclick="selRankTab('all')">Geral</button>`]
     .concat(closedRounds.map(r=>`<button class="rtab${activeRankTab===r.id?' active':''}" onclick="selRankTab('${r.id}')">${r.name}</button>`))
     .join('');
-  let sorted=PARTICIPANTS.map(p=>({name:p,pts:activeRankTab==='all'?scores[p].total:(scores[p].byRound[activeRankTab]||0)}))
-    .sort((a,b)=>b.pts-a.pts);
-  const totalGames=activeRankTab==='all'
-    ?closedRounds.reduce((s,r)=>s+r.games.length,0)
-    :(ROUNDS.find(r=>r.id===activeRankTab)||{games:[]}).games.length;
+  const sorted=PARTICIPANTS.map(p=>({name:p,pts:activeRankTab==='all'?scores[p].total:(scores[p].byRound[activeRankTab]||0)})).sort((a,b)=>b.pts-a.pts);
+  const totalGames=activeRankTab==='all'?closedRounds.reduce((s,r)=>s+r.games.length,0):(ROUNDS.find(r=>r.id===activeRankTab)||{games:[]}).games.length;
   const topPts=sorted[0]?sorted[0].pts:0;
   const avg=sorted.length?Math.round(sorted.reduce((s,p)=>s+p.pts,0)/sorted.length):0;
   let html=`<div class="round-tab-row">${tabBtns}</div>`;
@@ -725,23 +759,107 @@ function renderRank(){
   html+=`<div class="summary-bar">
     <div class="smet"><div class="smet-val">${sorted.length}</div><div class="smet-lbl">participantes</div></div>
     <div class="smet"><div class="smet-val">${totalGames}</div><div class="smet-lbl">jogos</div></div>
-    <div class="smet"><div class="smet-val">${topPts}</div><div class="smet-lbl">líder</div></div>
+    <div class="smet"><div class="smet-val">${topPts}</div><div class="smet-lbl">top</div></div>
     <div class="smet"><div class="smet-val">${avg}</div><div class="smet-lbl">média</div></div>
   </div>`;
   const medals=['m1','m2','m3'];
-  html+=`<div class="card" style="padding:.6rem;overflow-x:auto"><table class="rank-table"><thead><tr>
-    <th style="width:32px">#</th><th>Nome</th>`;
-  if(activeRankTab==='all')closedRounds.forEach(r=>{html+=`<th style="width:72px;text-align:right">${r.name}</th>`;});
-  html+=`<th style="width:55px;text-align:right">Pts</th></tr></thead><tbody>`;
+  const n=sorted.length;
+  const bottomStart=n-4;
+  html+=`<div class="card-wrap"><table class="rank-table"><thead><tr><th style="width:36px">#</th><th>Nome</th>`;
+  if(activeRankTab==='all')closedRounds.forEach(r=>{html+=`<th style="width:60px;text-align:right;font-size:9px">${r.name}</th>`;});
+  html+=`<th style="width:50px;text-align:right">Pts</th></tr></thead><tbody>`;
   sorted.forEach((s,i)=>{
-    const pos=i<3?`<span class="medal ${medals[i]}">${i+1}</span>`:`<span style="color:#444;font-weight:600">${i+1}</span>`;
-    const nameColor=i===0?'#FFD700':i===1?'#aaa':i===2?'#cd7f32':'#bbb';
-    html+=`<tr><td>${pos}</td><td style="font-weight:${i<3?700:500};color:${nameColor}">${s.name}</td>`;
-    if(activeRankTab==='all')closedRounds.forEach(r=>{html+=`<td style="text-align:right;color:#555">${scores[s.name].byRound[r.id]||0}</td>`;});
-    html+=`<td style="text-align:right"><span class="pts">${s.pts}</span></td></tr>`;
+    const pos=i<3?`<span class="medal ${medals[i]}">${i+1}</span>`:`<span style="color:${i>=bottomStart?'#f44336':'#555'};font-weight:600">${i+1}</span>`;
+    const nameColor=i===0?'#FFD700':i===1?'#aaa':i===2?'#cd7f32':i>=bottomStart?'#f44336':'#ccc';
+    const rowStyle=i>=bottomStart?'background:#1a0000;':'';
+    html+=`<tr style="${rowStyle}"><td>${pos}</td><td style="font-weight:${i<3||i>=bottomStart?'700':'500'};color:${nameColor}">${s.name}${i>=bottomStart?' 📉':''}</td>`;
+    if(activeRankTab==='all')closedRounds.forEach(r=>{html+=`<td style="text-align:right;color:#666">${scores[s.name].byRound[r.id]||0}</td>`;});
+    html+=`<td style="text-align:right"><span class="pts" style="${i>=bottomStart?'border-color:#f44336;color:#f44336;background:#3b0d0d':''}">${s.pts}</span></td></tr>`;
   });
   html+=`</tbody></table></div>`;
   c.innerHTML=html;
 }
 function selRankTab(rid){activeRankTab=rid;renderRank();}
+
+// ── Recordes ──────────────────────────────────────────────────────────────────
+function renderRecordes(){
+  const c=document.getElementById('tab-recordes');
+  if(!loaded){c.innerHTML='<div class="empty">Carregando...</div>';return;}
+  const closedRounds=ROUNDS.filter(r=>state.closed[r.id]);
+  const scores=computeScores();
+  const tabBtns=[`<button class="rtab${activeRecTab==='all'?' active':''}" onclick="selRecTab('all')">Geral</button>`]
+    .concat(closedRounds.map(r=>`<button class="rtab${activeRecTab===r.id?' active':''}" onclick="selRecTab('${r.id}')">${r.name}</button>`))
+    .join('');
+  let html=`<div class="round-tab-row">${tabBtns}</div>`;
+  if(!closedRounds.length){html+=`<div class="empty">⭐<br><br>Nenhuma rodada encerrada ainda.</div>`;c.innerHTML=html;return;}
+
+  let recData=[];
+  if(activeRecTab==='all'){
+    const totalGames=closedRounds.reduce((s,r)=>s+r.games.length,0);
+    recData=PARTICIPANTS.map(p=>{const pts=scores[p].total;const pct=totalGames>0?Math.round(pts/totalGames*100):0;return{name:p,pts,total:totalGames,pct};}).sort((a,b)=>b.pct-a.pct||b.pts-a.pts);
+  } else {
+    const r=ROUNDS.find(x=>x.id===activeRecTab);
+    const totalGames=r.games.length;
+    recData=PARTICIPANTS.map(p=>{const pts=scores[p].byRound[activeRecTab]||0;const pct=totalGames>0?Math.round(pts/totalGames*100):0;return{name:p,pts,total:totalGames,pct};}).sort((a,b)=>b.pct-a.pct||b.pts-a.pts);
+  }
+
+  const best=recData[0],worst=recData[recData.length-1];
+  html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem">
+    <div class="rec-card" style="border-color:#8B6914">
+      <div class="rec-title">🥇 Melhor</div>
+      <div style="font-size:15px;font-weight:700;color:#FFD700">${best.name}</div>
+      <div style="font-size:26px;font-weight:700;color:#4caf50;margin:4px 0">${best.pct}%</div>
+      <div style="font-size:11px;color:#666">${best.pts} de ${best.total} jogos</div>
+    </div>
+    <div class="rec-card" style="border-color:#3b0d0d">
+      <div class="rec-title">📉 Pior</div>
+      <div style="font-size:15px;font-weight:700;color:#f44336">${worst.name}</div>
+      <div style="font-size:26px;font-weight:700;color:#f44336;margin:4px 0">${worst.pct}%</div>
+      <div style="font-size:11px;color:#666">${worst.pts} de ${worst.total} jogos</div>
+    </div>
+  </div>`;
+
+  html+=`<div class="rec-card"><div class="rec-title">📊 Aproveitamento por Participante</div>`;
+  recData.forEach((d,i)=>{
+    const pctClass=d.pct>=60?'high':d.pct>=35?'mid':'low';
+    const medals3=['🥇','🥈','🥉'];
+    const isBottom=i>=recData.length-4;
+    html+=`<div class="rec-row">
+      <div style="flex:1">
+        <div class="rec-name" style="color:${isBottom?'#f44336':i===0?'#FFD700':'#ccc'}">${i<3?medals3[i]:''} ${d.name}</div>
+        <div class="rec-detail">${d.pts} acerto${d.pts!==1?'s':''} de ${d.total} jogo${d.total!==1?'s':''}</div>
+        <div class="bar-bg"><div class="bar-fill ${pctClass}" style="width:${d.pct}%"></div></div>
+      </div>
+      <div style="margin-left:12px;text-align:right">
+        <div class="rec-pct ${pctClass}">${d.pct}%</div>
+        ${isBottom?'<div style="font-size:10px;color:#f44336">lanterna</div>':''}
+      </div>
+    </div>`;
+  });
+  html+=`</div>`;
+
+  if(activeRecTab==='all'&&closedRounds.length>0){
+    html+=`<div class="rec-card"><div class="rec-title">🏅 Melhor Rodada de Cada Um</div>`;
+    const bestPerP=PARTICIPANTS.map(p=>{
+      let best={rid:'',pts:0,total:0,pct:0,rname:''};
+      closedRounds.forEach(r=>{const pts=scores[p].byRound[r.id]||0;const pct=Math.round(pts/r.games.length*100);if(pct>best.pct||(pct===best.pct&&pts>best.pts)){best={rid:r.id,pts,total:r.games.length,pct,rname:r.name};}});
+      return{name:p,...best};
+    }).sort((a,b)=>b.pct-a.pct||b.pts-a.pts);
+    bestPerP.forEach(d=>{
+      if(!d.rid)return;
+      const pctClass=d.pct>=60?'high':d.pct>=35?'mid':'low';
+      html+=`<div class="rec-row">
+        <div style="flex:1"><div class="rec-name">${d.name}</div><div class="rec-detail">${d.rname} — ${d.pts} de ${d.total} jogos</div></div>
+        <div style="margin-left:12px"><span class="rec-pct ${pctClass}" style="font-size:16px">${d.pct}%</span></div>
+      </div>`;
+    });
+    html+=`</div>`;
+  }
+  c.innerHTML=html;
+}
+function selRecTab(rid){activeRecTab=rid;renderRecordes();}
+
+loadState();
 </script>
+</body>
+</html>
