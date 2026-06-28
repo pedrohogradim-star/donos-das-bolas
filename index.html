@@ -565,6 +565,27 @@ async function loadState(){
   if(!state.specialLocked)state.specialLocked={};
   if(!state.elimResults)state.elimResults={};
   if(!state.elimVotes)state.elimVotes={};
+
+  // ── Pré-lançar votos e resultado do jogo e03: África do Sul × Canadá ──────
+  // Canadá: Pedro, Caio, Rosalves, Alexandre, Macleiton, Filipi, PH, Neto, Arruda, Xavier
+  // África do Sul: Elicom, Matheus, João Antônio
+  // Empate: Luís Eduardo, João Victor
+  const E03_VOTES = {
+    'Pedro':'away','Caio':'away','Rosalves':'away','Alexandre':'away',
+    'Macleiton':'away','Filipi':'away','PH':'away','Neto':'away',
+    'Arruda':'away','Xavier':'away',
+    'Elicom':'home','Matheus':'home','João Antônio':'home',
+    'Luís Eduardo':'draw','João Victor':'draw'
+  };
+  Object.entries(E03_VOTES).forEach(([p,v])=>{
+    if(!state.elimVotes[p])state.elimVotes[p]={};
+    if(!state.elimVotes[p]['e03'])state.elimVotes[p]['e03']=v;
+  });
+  // Resultado: Canadá venceu (away)
+  if(!state.elimResults['e03']){
+    state.elimResults['e03']={winner:'Canadá',loser:'África do Sul',outcome:'away'};
+    autoSaved=true;
+  }
   loaded=true;
   if(!state.submitted)state.submitted={};
   let autoSaved=false;
@@ -1403,31 +1424,40 @@ function getElimTeam(matchId, side) {
   return res[side] || null;
 }
 
-// Registra resultado de uma chave e propaga vencedor para próxima
-function setElimResult(matchId, winner) {
+// Registra resultado: outcome = 'home'|'draw'|'away'
+// Em caso de empate na fase eliminatória, o 'home' avança por convenção
+// mas o admin escolhe quem realmente avançou via prorrogação/pênaltis:
+// na prática, em eliminatórias o empate significa que haverá prorrogação —
+// então o admin vota 'draw' no resultado normal e depois Pedro escolhe quem avançou.
+// Simplificado: se outcome='draw', pedimos ao Pedro qual time avançou em seguida.
+function setElimResult(matchId, outcome) {
   const match = ELIM_BRACKET.find(m => m.id === matchId);
   if (!match) return;
   const home = resolveTeam(match.home);
   const away = resolveTeam(match.away);
   if (!home || !away) return;
-  const loser = winner === home ? away : home;
+
+  let winner, loser;
+  if (outcome === 'home') { winner = home; loser = away; }
+  else if (outcome === 'away') { winner = away; loser = home; }
+  else {
+    // Empate: pedir quem avançou (prorrogação/pênaltis)
+    const choice = confirm(`Empate em ${home} × ${away}.\n\nClique OK para ${home} avançar, ou Cancelar para ${away} avançar.`);
+    winner = choice ? home : away;
+    loser  = choice ? away : home;
+  }
 
   if (!state.elimResults) state.elimResults = {};
-  state.elimResults[matchId] = {winner, loser};
-
-  // Propagar para próxima chave automaticamente
-  // (não precisa fazer nada extra — resolveTeam lê sempre o estado atual)
+  state.elimResults[matchId] = {winner, loser, outcome};
   save();
-  renderElim();
+  renderPalpites();
 }
 
 function clearElimResult(matchId) {
   if (!state.elimResults) return;
-  // Ao apagar, precisa também limpar todos os resultados que dependem deste
   function clearDown(mid) {
     if (!state.elimResults[mid]) return;
     delete state.elimResults[mid];
-    // Encontrar matches que dependem deste
     ELIM_BRACKET.forEach(m => {
       const hFrom = m.home && m.home.from;
       const aFrom = m.away && m.away.from;
@@ -1436,21 +1466,22 @@ function clearElimResult(matchId) {
   }
   clearDown(matchId);
   save();
-  renderElim();
+  renderPalpites();
 }
 
-// Palpites eliminatórias: estado.elimVotes = {pid: {matchId: 'TeamName'}}
+// Palpites eliminatórias: estado.elimVotes = {pid: {matchId: 'home'|'draw'|'away'}}
 function getElimVote(pid, matchId) {
   return state.elimVotes && state.elimVotes[pid] && state.elimVotes[pid][matchId];
 }
-function setElimVote(matchId, teamName) {
+function setElimVote(matchId, val) {
+  // val = 'home' | 'draw' | 'away'
   if (state.elimResults && state.elimResults[matchId]) {
     alert('Este jogo já tem resultado — palpite bloqueado.');
     return;
   }
   if (!state.elimVotes) state.elimVotes = {};
   if (!state.elimVotes[activeP]) state.elimVotes[activeP] = {};
-  state.elimVotes[activeP][matchId] = teamName;
+  state.elimVotes[activeP][matchId] = val;
   save();
   renderPalpites();
 }
@@ -1462,7 +1493,7 @@ function renderElimHTML() {
 
   const phases = ['16avos','oitavas','quartas','semi','final'];
   let html = '';
-  html += `<div class="notice notice-info">🏟️ Palpite em quem vence cada jogo. O vencedor avança automaticamente. Palpites ficam abertos até o resultado ser lançado.</div>`;
+  html += `<div class="notice notice-info">🏟️ Palpite no resultado de cada jogo. O vencedor avança automaticamente. Palpites ficam abertos até o resultado ser lançado.</div>`;
 
   phases.forEach(ph => {
     const matches = ELIM_BRACKET.filter(m => m.phase === ph);
@@ -1472,67 +1503,81 @@ function renderElimHTML() {
     matches.forEach(m => {
       const home = resolveTeam(m.home);
       const away = resolveTeam(m.away);
-      const res = state.elimResults[m.id];
-      const myVote = getElimVote(activeP, m.id);
+      const res = state.elimResults[m.id]; // {winner, outcome: 'home'|'draw'|'away'}
+      const myVote = getElimVote(activeP, m.id); // 'home'|'draw'|'away'
       const resultLaunched = !!res;
       const canVoteThis = !resultLaunched && home && away;
 
-      const homeVoters = [], awayVoters = [];
+      // Parcial: contar por slot
+      const homeVoters = [], drawVoters = [], awayVoters = [];
       if (home && away) {
         PARTICIPANTS.forEach(p => {
           const v = getElimVote(p, m.id);
-          if (v === home) homeVoters.push(p.split(' ')[0]);
-          else if (v === away) awayVoters.push(p.split(' ')[0]);
+          if (v === 'home') homeVoters.push(p.split(' ')[0]);
+          else if (v === 'draw') drawVoters.push(p.split(' ')[0]);
+          else if (v === 'away') awayVoters.push(p.split(' ')[0]);
         });
       }
 
-      const btnClass = (team) => {
-        let cls = 'elim-btn';
-        if (resultLaunched) {
-          cls += res.winner === team ? ' winner' : ' loser';
-        } else if (myVote === team) {
+      // Classes dos botões de palpite
+      const btnCls = (slot) => {
+        let cls = slot === 'draw' ? 'vote-draw' : 'vote-btn';
+        if (resultLaunched && res.outcome) {
+          if (myVote === slot && myVote === res.outcome) cls += ' correct';
+          else if (myVote === slot && myVote !== res.outcome) cls += ' wrong';
+          else if (slot === res.outcome) cls += ' sel';
+        } else if (myVote === slot) {
           cls += ' sel';
         }
         return cls;
       };
 
       const safeQ = s => s ? s.replace(/'/g,"\\'") : '';
+      const dis = canVoteThis ? '' : 'disabled';
 
       html += `<div class="elim-match${resultLaunched?' winner-set':''}">
-        <div class="elim-match-meta">${m.date}${m.time&&m.time!=='?'?' '+m.time:''} ${m.venue||''}</div>
-        <div class="elim-teams">`;
+        <div class="elim-match-meta">${m.date}${m.time&&m.time!==''?' '+m.time:''} ${m.venue||''}</div>
+        <div class="vote-row">`;
 
       html += home
-        ? `<button class="${btnClass(home)}" ${!canVoteThis?'disabled':''} onclick="setElimVote('${m.id}','${safeQ(home)}')"><span class="fl">${F(home)}</span><span class="tn">${home}</span></button>`
+        ? `<button class="${btnCls('home')}" ${dis} onclick="setElimVote('${m.id}','home')"><span class="fl">${F(home)}</span><span class="tn">${home}</span></button>`
         : `<div class="elim-tbd">A definir</div>`;
 
-      html += `<span class="elim-sep">vs</span>`;
+      html += home && away
+        ? `<button class="${btnCls('draw')}" ${dis} onclick="setElimVote('${m.id}','draw')">EMP</button>`
+        : `<span></span>`;
 
       html += away
-        ? `<button class="${btnClass(away)}" ${!canVoteThis?'disabled':''} onclick="setElimVote('${m.id}','${safeQ(away)}')"><span class="fl">${F(away)}</span><span class="tn">${away}</span></button>`
+        ? `<button class="${btnCls('away')}" ${dis} onclick="setElimVote('${m.id}','away')"><span class="fl">${F(away)}</span><span class="tn">${away}</span></button>`
         : `<div class="elim-tbd">A definir</div>`;
 
       html += `</div>`;
 
+      // Parcial de votos (3 colunas: casa | empate | fora)
       if (home && away) {
-        html += `<div class="elim-vote-partial">
-          <div class="elim-partial-col${homeVoters.length?' hv':''}">${homeVoters.join(', ')||'—'}</div>
-          <div class="elim-partial-col" style="text-align:right;${awayVoters.length?'color:#8B6914':''}">${awayVoters.join(', ')||'—'}</div>
+        html += `<div class="vote-partial">
+          <div class="vote-partial-col${homeVoters.length?' has-votes':''}">${homeVoters.join(', ')||'—'}</div>
+          <div class="vote-partial-col${drawVoters.length?' has-votes':''}">${drawVoters.join(', ')||'—'}</div>
+          <div class="vote-partial-col${awayVoters.length?' has-votes':''}">${awayVoters.join(', ')||'—'}</div>
         </div>`;
       }
 
       if (resultLaunched) {
-        html += `<div style="margin-top:5px"><span class="advance-badge">✓ ${res.winner} avançou</span>`;
+        const outcomeLabel = res.outcome === 'draw' ? 'Empate' : `${res.winner} venceu`;
+        html += `<div style="margin-top:5px">
+          <span class="advance-badge">✓ ${res.outcome==='draw'?'Empate — prorrogação/pênaltis':res.winner+' avançou'}</span>`;
         if (isPedro()) html += ` <button class="btn-reopen-game" style="margin-left:6px" onclick="clearElimResult('${m.id}')">🔄 Corrigir</button>`;
         html += `</div>`;
       }
 
+      // Botões admin para lançar resultado
       if (isPedro() && home && away && !resultLaunched) {
         html += `<div style="margin-top:8px;padding-top:8px;border-top:1px solid #1a1a1a">
           <div style="font-size:9px;color:#8B6914;letter-spacing:1px;margin-bottom:4px">★ ADMIN — Lançar resultado:</div>
           <div style="display:flex;gap:6px;flex-wrap:wrap">
-            <button class="result-btn" onclick="setElimResult('${m.id}','${safeQ(home)}')">${F(home)} ${home} venceu</button>
-            <button class="result-btn" onclick="setElimResult('${m.id}','${safeQ(away)}')">${F(away)} ${away} venceu</button>
+            <button class="result-btn" onclick="setElimResult('${m.id}','home')">${F(home)} ${home} venceu</button>
+            <button class="result-btn" onclick="setElimResult('${m.id}','draw')">Empate (prorr./pên.)</button>
+            <button class="result-btn" onclick="setElimResult('${m.id}','away')">${F(away)} ${away} venceu</button>
           </div>
         </div>`;
       }
