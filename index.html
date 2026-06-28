@@ -157,6 +157,26 @@ body{font-family:'Oswald',sans-serif;color:#ccc}
 /* reopen per-game */
 .btn-reopen-game{padding:4px 10px;font-size:10px;font-family:'Oswald',sans-serif;font-weight:600;letter-spacing:1px;text-transform:uppercase;border:1px solid #1565c0;border-radius:3px;background:#0a1a2a;color:#64b5f6;cursor:pointer;margin-top:6px;transition:all .2s}
 .btn-reopen-game:hover{background:#1565c0;color:#fff}
+/* ── Eliminatórias ─────────────────────────────────────────────────────────── */
+.elim-phase-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#8B6914;margin:1rem 0 .5rem;padding-bottom:6px;border-bottom:1px solid #2a2a2a}
+.elim-match{background:#0d0d0d;border:1px solid #2a2a2a;border-radius:6px;padding:10px 12px;margin-bottom:8px}
+.elim-match.winner-set{border-color:#4caf50}
+.elim-match-meta{font-size:9px;color:#555;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.elim-teams{display:grid;grid-template-columns:1fr auto 1fr;gap:4px;align-items:center}
+.elim-btn{padding:8px 6px;font-size:10px;font-family:'Oswald',sans-serif;font-weight:500;border:1px solid #333;border-radius:4px;background:#0a0a0a;cursor:pointer;color:#666;text-align:center;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:3px;min-height:50px;line-height:1.2}
+.elim-btn .fl{font-size:18px;line-height:1}
+.elim-btn .tn{font-size:9px;letter-spacing:.3px}
+.elim-btn.sel{background:#1a1500;border-color:#FFD700;color:#FFD700;font-weight:600}
+.elim-btn.winner{background:#0d3b1a;border-color:#4caf50;color:#4caf50;font-weight:700}
+.elim-btn.loser{opacity:.35}
+.elim-btn:disabled{cursor:not-allowed}
+.elim-sep{font-size:11px;color:#444;text-align:center}
+.elim-partial{display:flex;gap:4px;justify-content:space-between;margin-top:5px;font-size:9px;color:#555}
+.elim-partial-col{flex:1;text-align:center;line-height:1.3}
+.elim-partial-col.hv{color:#8B6914}
+.advance-badge{display:inline-block;font-size:9px;padding:2px 6px;background:#0d3b1a;color:#4caf50;border:1px solid #4caf50;border-radius:3px;margin-top:4px;letter-spacing:.5px}
+.elim-tbd{color:#444;font-size:11px;font-style:italic;padding:8px 6px;text-align:center;min-height:50px;display:flex;align-items:center;justify-content:center;border:1px dashed #2a2a2a;border-radius:4px}
+.elim-vote-partial{display:flex;gap:2px;justify-content:space-between;margin-top:4px;font-size:9px}
 </style>
 </head>
 <body>
@@ -228,11 +248,13 @@ body{font-family:'Oswald',sans-serif;color:#ccc}
     </div>
     <div class="tabs">
       <button class="tab active" onclick="showTab('palpites')">⚽ Palpites</button>
-      <button class="tab" onclick="showTab('resultados')">✓ Resultados</button>
-      <button class="tab" onclick="showTab('rank')">🏆 Ranking</button>
-      <button class="tab" onclick="showTab('recordes')">⭐ Recordes</button>
+      <button class="tab" onclick="showTab('especiais')">🌟 Especiais</button>
+      <button class="tab" onclick="showTab('resultados')">✓ Result.</button>
+      <button class="tab" onclick="showTab('rank')">🏆 Rank</button>
+      <button class="tab" onclick="showTab('recordes')">⭐ Rec.</button>
     </div>
     <div id="tab-palpites" class="section active"></div>
+    <div id="tab-especiais" class="section"></div>
     <div id="tab-resultados" class="section"></div>
     <div id="tab-rank" class="section"></div>
     <div id="tab-recordes" class="section"></div>
@@ -541,6 +563,8 @@ async function loadState(){
   if(!state.gameReopen)state.gameReopen={};
   if(!state.specialPicks)state.specialPicks={};
   if(!state.specialLocked)state.specialLocked={};
+  if(!state.elimResults)state.elimResults={};
+  if(!state.elimVotes)state.elimVotes={};
   loaded=true;
   if(!state.submitted)state.submitted={};
   let autoSaved=false;
@@ -613,7 +637,6 @@ function selectUser(p){
   document.getElementById('app').style.display='block';
   const open=ROUNDS.find(r=>state.unlocked[r.id]&&!state.closed[r.id]);
   activePTab=open?open.id:(ROUNDS.find(r=>state.unlocked[r.id])||ROUNDS[0]).id;
-  activePSubTab='jogos';
   renderCurrent();
 }
 
@@ -624,13 +647,14 @@ let draft={};
 
 function renderCurrent(){
   if(currentTab==='palpites')renderPalpites();
+  else if(currentTab==='especiais')renderEspeciaisTab();
   else if(currentTab==='resultados')renderResultados();
   else if(currentTab==='rank')renderRank();
   else renderRecordes();
 }
 function showTab(t){
   currentTab=t;
-  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['palpites','resultados','rank','recordes'][i]===t));
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['palpites','especiais','resultados','rank','recordes'][i]===t));
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById('tab-'+t).classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
@@ -678,6 +702,23 @@ function renderPalpites(){
 
 // ── Palpites ─ formulário ─────────────────────────────────────────────────────
 function renderPalpiteForm(c){
+  // Se aba eliminatórias, apenas mostrar seletor de rodadas + conteúdo elim
+  if(activePTab==='elim'){
+    const roundBtns=ROUNDS.map(r2=>{
+      const ul=state.unlocked[r2.id];
+      return `<button class="rtab${activePTab===r2.id?' active':''}" onclick="selectPTab('${r2.id}')" ${!ul?'disabled':''}>${r2.name}</button>`;
+    }).join('');
+    const elimBtn=`<button class="rtab active">🏟️ Eliminat.</button>`;
+    let html=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div class="pname-display">${activeP}</div>
+    </div>
+    <div class="round-tab-row">${roundBtns}${elimBtn}</div>`;
+    html+=renderElimHTML();
+    c.innerHTML=html;
+    startCountdownTick();
+    return;
+  }
+
   const r=ROUNDS.find(x=>x.id===activePTab)||ROUNDS[0];
   const rid=r.id;
   const cv=canVote(rid);
@@ -685,7 +726,6 @@ function renderPalpiteForm(c){
   const roundClosed=state.closed[rid];
 
   const pv = getDraft(activeP,rid);
-  // Para view: usa salvo; para edição usa draft
   const pvDisplay = (!cv && !Object.keys(pv).some(k=>pv[k])) ? ((state.votes[rid]&&state.votes[rid][activeP])||{}) : pv;
 
   const done=r.games.filter(g=>pvDisplay[g.id]).length;
@@ -699,24 +739,13 @@ function renderPalpiteForm(c){
     <span class="pill ${allDone?'pill-ok':'pill-no'}">${done}/${total}</span>
   </div>`;
 
-  // Abas de rodada
+  // Abas de rodada — inclui Eliminatórias como última aba
   const roundBtns=ROUNDS.map(r2=>{
     const ul=state.unlocked[r2.id];
     return `<button class="rtab${activePTab===r2.id?' active':''}" onclick="selectPTab('${r2.id}')" ${!ul?'disabled':''}>${r2.name}</button>`;
   }).join('');
-  html+=`<div class="round-tab-row">${roundBtns}</div>`;
-
-  // Sub-abas: jogos / especiais
-  html+=`<div class="ptab-row">
-    <button class="ptab-btn${activePSubTab==='jogos'?' active':''}" onclick="selectPSubTab('jogos')">⚽ Jogos</button>
-    <button class="ptab-btn${activePSubTab==='especiais'?' active':''}" onclick="selectPSubTab('especiais')">🌟 Especiais da Copa</button>
-  </div>`;
-
-  if(activePSubTab==='especiais'){
-    html+=renderSpeciaisHTML();
-    c.innerHTML=html;
-    return;
-  }
+  const elimBtn=`<button class="rtab${activePTab==='elim'?' active':''}" onclick="selectPTab('elim')">🏟️ Eliminat.</button>`;
+  html+=`<div class="round-tab-row">${roundBtns}${elimBtn}</div>`;
 
   // Countdown
   if(!roundClosed && ts.countdown!=null){
@@ -848,7 +877,11 @@ function toggleGameReopen(rid,gid,p){
   save();renderPalpites();
 }
 
-function selectPTab(rid){activePTab=rid;renderPalpites();}
+function selectPTab(rid){
+  activePTab=rid;
+  // Recalcular done/total só para rodadas normais
+  renderPalpites();
+}
 function selectPSubTab(t){activePSubTab=t;renderPalpites();}
 
 function setVote(rid,gid,val){
@@ -1236,6 +1269,296 @@ function renderRecordes(){
   c.innerHTML=html;
 }
 function selRecTab(rid){activeRecTab=rid;renderRecordes();}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// FASE ELIMINATÓRIA — bracket corrigido
+// ══════════════════════════════════════════════════════════════════════════════
+const ELIM_BRACKET = [
+  // ── 16 avos (Segunda Fase) — Lado A ────────────────────────────────────────
+  {id:'e01',phase:'16avos',label:'16 Avos 1 — Alem. x Par.',date:'28/06',time:'16h',venue:'Nova Jersey',
+   home:'Alemanha',away:'Paraguai',nextMatch:{id:'e09',slot:'home'}},
+  {id:'e02',phase:'16avos',label:'16 Avos 2 — Fra. x Sue.',date:'28/06',time:'20h',venue:'Houston',
+   home:'França',away:'Suécia',nextMatch:{id:'e09',slot:'away'}},
+  {id:'e03',phase:'16avos',label:'16 Avos 3 — AS x Can.',date:'29/06',time:'14h',venue:'Nova Jersey',
+   home:'África do Sul',away:'Canadá',nextMatch:{id:'e10',slot:'home'}},
+  {id:'e04',phase:'16avos',label:'16 Avos 4 — Hol. x Mar.',date:'29/06',time:'18h',venue:'Monterrey',
+   home:'Holanda',away:'Marrocos',nextMatch:{id:'e10',slot:'away'}},
+  {id:'e05',phase:'16avos',label:'16 Avos 5 — Por. x Cro.',date:'30/06',time:'16h',venue:'Boston',
+   home:'Portugal',away:'Croácia',nextMatch:{id:'e11',slot:'home'}},
+  {id:'e06',phase:'16avos',label:'16 Avos 6 — Esp. x Áus.',date:'30/06',time:'20h',venue:'Dallas',
+   home:'Espanha',away:'Áustria',nextMatch:{id:'e11',slot:'away'}},
+  {id:'e07',phase:'16avos',label:'16 Avos 7 — EUA x Bós.',date:'01/07',time:'16h',venue:'Seattle',
+   home:'Estados Unidos',away:'Bósnia',nextMatch:{id:'e12',slot:'home'}},
+  {id:'e08',phase:'16avos',label:'16 Avos 8 — Bél. x Sen.',date:'01/07',time:'20h',venue:'Atlanta',
+   home:'Bélgica',away:'Senegal',nextMatch:{id:'e12',slot:'away'}},
+  // ── 16 avos (Segunda Fase) — Lado B ────────────────────────────────────────
+  {id:'e13',phase:'16avos',label:'16 Avos 9 — Bra. x Jap.',date:'29/06',time:'22h',venue:'Houston',
+   home:'Brasil',away:'Japão',nextMatch:{id:'e17',slot:'home'}},
+  {id:'e14',phase:'16avos',label:'16 Avos 10 — CM x Nor.',date:'30/06',time:'14h',venue:'Dallas',
+   home:'Costa do Marfim',away:'Noruega',nextMatch:{id:'e17',slot:'away'}},
+  {id:'e15',phase:'16avos',label:'16 Avos 11 — Méx. x Equ.',date:'30/06',time:'22h',venue:'Cidade do México',
+   home:'México',away:'Equador',nextMatch:{id:'e18',slot:'home'}},
+  {id:'e16',phase:'16avos',label:'16 Avos 12 — Ing. x RDC',date:'01/07',time:'13h',venue:'Atlanta',
+   home:'Inglaterra',away:'RD Congo',nextMatch:{id:'e18',slot:'away'}},
+  {id:'e19',phase:'16avos',label:'16 Avos 13 — Arg. x CV',date:'02/07',time:'16h',venue:'Miami',
+   home:'Argentina',away:'Cabo Verde',nextMatch:{id:'e23',slot:'home'}},
+  {id:'e20',phase:'16avos',label:'16 Avos 14 — Aus. x Egi.',date:'02/07',time:'20h',venue:'Dallas',
+   home:'Austrália',away:'Egito',nextMatch:{id:'e23',slot:'away'}},
+  {id:'e21',phase:'16avos',label:'16 Avos 15 — Suí. x Arg.',date:'03/07',time:'16h',venue:'Vancouver',
+   home:'Suíça',away:'Argélia',nextMatch:{id:'e24',slot:'home'}},
+  {id:'e22',phase:'16avos',label:'16 Avos 16 — Col. x Gan.',date:'03/07',time:'20h',venue:'Kansas City',
+   home:'Colômbia',away:'Gana',nextMatch:{id:'e24',slot:'away'}},
+
+  // ── Oitavas de Final — Lado A ───────────────────────────────────────────────
+  // Oitavas 1: Venc(Alem×Par) × Venc(Fra×Sue)   → 04/07 18h
+  {id:'e09',phase:'oitavas',label:'Oitavas 1',date:'04/07',time:'18h',
+   home:{from:'e01',side:'winner'},away:{from:'e02',side:'winner'},
+   nextMatch:{id:'e25',slot:'home'}},
+  // Oitavas 2: Venc(AS×Can) × Venc(Hol×Mar)     → 04/07 14h
+  {id:'e10',phase:'oitavas',label:'Oitavas 2',date:'04/07',time:'14h',
+   home:{from:'e03',side:'winner'},away:{from:'e04',side:'winner'},
+   nextMatch:{id:'e25',slot:'away'}},
+  // Oitavas 3: Venc(Por×Cro) × Venc(Esp×Áus)    → 06/07 16h
+  {id:'e11',phase:'oitavas',label:'Oitavas 3',date:'06/07',time:'16h',
+   home:{from:'e05',side:'winner'},away:{from:'e06',side:'winner'},
+   nextMatch:{id:'e26',slot:'home'}},
+  // Oitavas 4: Venc(EUA×Bós) × Venc(Bél×Sen)    → 06/07 21h
+  {id:'e12',phase:'oitavas',label:'Oitavas 4',date:'06/07',time:'21h',
+   home:{from:'e07',side:'winner'},away:{from:'e08',side:'winner'},
+   nextMatch:{id:'e26',slot:'away'}},
+  // ── Oitavas de Final — Lado B ───────────────────────────────────────────────
+  // Oitavas 5: Venc(Bra×Jap) × Venc(CM×Nor)     → 05/07 17h
+  {id:'e17',phase:'oitavas',label:'Oitavas 5',date:'05/07',time:'17h',
+   home:{from:'e13',side:'winner'},away:{from:'e14',side:'winner'},
+   nextMatch:{id:'e27',slot:'home'}},
+  // Oitavas 6: Venc(Méx×Equ) × Venc(Ing×RDC)    → 05/07 21h
+  {id:'e18',phase:'oitavas',label:'Oitavas 6',date:'05/07',time:'21h',
+   home:{from:'e15',side:'winner'},away:{from:'e16',side:'winner'},
+   nextMatch:{id:'e27',slot:'away'}},
+  // Oitavas 7: Venc(Arg×CV) × Venc(Aus×Egi)      → 07/07 13h
+  {id:'e23',phase:'oitavas',label:'Oitavas 7',date:'07/07',time:'13h',
+   home:{from:'e19',side:'winner'},away:{from:'e20',side:'winner'},
+   nextMatch:{id:'e28',slot:'home'}},
+  // Oitavas 8: Venc(Suí×Arg) × Venc(Col×Gan)     → 07/07 17h
+  {id:'e24',phase:'oitavas',label:'Oitavas 8',date:'07/07',time:'17h',
+   home:{from:'e21',side:'winner'},away:{from:'e22',side:'winner'},
+   nextMatch:{id:'e28',slot:'away'}},
+
+  // ── Quartas de Final ─────────────────────────────────────────────────────────
+  // Quartas 1: Venc(Oit1) × Venc(Oit2)  — Lado A
+  {id:'e25',phase:'quartas',label:'Quartas 1',date:'11/07',time:'',
+   home:{from:'e09',side:'winner'},away:{from:'e10',side:'winner'},
+   nextMatch:{id:'e29',slot:'home'}},
+  // Quartas 2: Venc(Oit3) × Venc(Oit4)  — Lado A
+  {id:'e26',phase:'quartas',label:'Quartas 2',date:'11/07',time:'',
+   home:{from:'e11',side:'winner'},away:{from:'e12',side:'winner'},
+   nextMatch:{id:'e29',slot:'away'}},
+  // Quartas 3: Venc(Oit5) × Venc(Oit6)  — Lado B
+  {id:'e27',phase:'quartas',label:'Quartas 3',date:'12/07',time:'',
+   home:{from:'e17',side:'winner'},away:{from:'e18',side:'winner'},
+   nextMatch:{id:'e30',slot:'home'}},
+  // Quartas 4: Venc(Oit7) × Venc(Oit8)  — Lado B
+  {id:'e28',phase:'quartas',label:'Quartas 4',date:'13/07',time:'',
+   home:{from:'e23',side:'winner'},away:{from:'e24',side:'winner'},
+   nextMatch:{id:'e30',slot:'away'}},
+
+  // ── Semifinais ────────────────────────────────────────────────────────────────
+  // Semi 1: Venc(Qua1) × Venc(Qua2)
+  {id:'e29',phase:'semi',label:'Semifinal 1',date:'15/07',time:'',
+   home:{from:'e25',side:'winner'},away:{from:'e26',side:'winner'},
+   nextMatch:{id:'e31',slot:'home'}},
+  // Semi 2: Venc(Qua3) × Venc(Qua4)
+  {id:'e30',phase:'semi',label:'Semifinal 2',date:'16/07',time:'',
+   home:{from:'e27',side:'winner'},away:{from:'e28',side:'winner'},
+   nextMatch:{id:'e31',slot:'away'}},
+
+  // ── Final ─────────────────────────────────────────────────────────────────────
+  {id:'e31',phase:'final',label:'Final',date:'19/07',time:'',
+   home:{from:'e29',side:'winner'},away:{from:'e30',side:'winner'},
+   nextMatch:null},
+];
+
+const ELIM_PHASE_LABELS = {
+  '16avos':'16 Avos de Final',
+  'oitavas':'Oitavas de Final',
+  'quartas':'Quartas de Final',
+  'semi':'Semifinais',
+  'final':'Final'
+};
+
+// Resolve o nome do time num slot (pode ser string fixa ou dependente de resultado)
+function resolveTeam(slot) {
+  if (!slot) return null;
+  if (typeof slot === 'string') return slot;
+  // slot = {from: 'e01', side: 'winner'}
+  const res = (state.elimResults && state.elimResults[slot.from]);
+  if (!res) return null; // ainda não decidido
+  return res[slot.side] || null;
+}
+
+// Obtém todos os vencedores/perdedores propagados pelo bracket
+function getElimTeam(matchId, side) {
+  const res = state.elimResults && state.elimResults[matchId];
+  if (!res) return null;
+  return res[side] || null;
+}
+
+// Registra resultado de uma chave e propaga vencedor para próxima
+function setElimResult(matchId, winner) {
+  const match = ELIM_BRACKET.find(m => m.id === matchId);
+  if (!match) return;
+  const home = resolveTeam(match.home);
+  const away = resolveTeam(match.away);
+  if (!home || !away) return;
+  const loser = winner === home ? away : home;
+
+  if (!state.elimResults) state.elimResults = {};
+  state.elimResults[matchId] = {winner, loser};
+
+  // Propagar para próxima chave automaticamente
+  // (não precisa fazer nada extra — resolveTeam lê sempre o estado atual)
+  save();
+  renderElim();
+}
+
+function clearElimResult(matchId) {
+  if (!state.elimResults) return;
+  // Ao apagar, precisa também limpar todos os resultados que dependem deste
+  function clearDown(mid) {
+    if (!state.elimResults[mid]) return;
+    delete state.elimResults[mid];
+    // Encontrar matches que dependem deste
+    ELIM_BRACKET.forEach(m => {
+      const hFrom = m.home && m.home.from;
+      const aFrom = m.away && m.away.from;
+      if (hFrom === mid || aFrom === mid) clearDown(m.id);
+    });
+  }
+  clearDown(matchId);
+  save();
+  renderElim();
+}
+
+// Palpites eliminatórias: estado.elimVotes = {pid: {matchId: 'TeamName'}}
+function getElimVote(pid, matchId) {
+  return state.elimVotes && state.elimVotes[pid] && state.elimVotes[pid][matchId];
+}
+function setElimVote(matchId, teamName) {
+  if (state.elimResults && state.elimResults[matchId]) {
+    alert('Este jogo já tem resultado — palpite bloqueado.');
+    return;
+  }
+  if (!state.elimVotes) state.elimVotes = {};
+  if (!state.elimVotes[activeP]) state.elimVotes[activeP] = {};
+  state.elimVotes[activeP][matchId] = teamName;
+  save();
+  renderPalpites();
+}
+
+// Gera HTML do chaveamento (usado dentro da aba palpites)
+function renderElimHTML() {
+  if (!state.elimResults) state.elimResults = {};
+  if (!state.elimVotes) state.elimVotes = {};
+
+  const phases = ['16avos','oitavas','quartas','semi','final'];
+  let html = '';
+  html += `<div class="notice notice-info">🏟️ Palpite em quem vence cada jogo. O vencedor avança automaticamente. Palpites ficam abertos até o resultado ser lançado.</div>`;
+
+  phases.forEach(ph => {
+    const matches = ELIM_BRACKET.filter(m => m.phase === ph);
+    if (!matches.length) return;
+    html += `<div class="elim-phase-title">${ELIM_PHASE_LABELS[ph]}</div>`;
+
+    matches.forEach(m => {
+      const home = resolveTeam(m.home);
+      const away = resolveTeam(m.away);
+      const res = state.elimResults[m.id];
+      const myVote = getElimVote(activeP, m.id);
+      const resultLaunched = !!res;
+      const canVoteThis = !resultLaunched && home && away;
+
+      const homeVoters = [], awayVoters = [];
+      if (home && away) {
+        PARTICIPANTS.forEach(p => {
+          const v = getElimVote(p, m.id);
+          if (v === home) homeVoters.push(p.split(' ')[0]);
+          else if (v === away) awayVoters.push(p.split(' ')[0]);
+        });
+      }
+
+      const btnClass = (team) => {
+        let cls = 'elim-btn';
+        if (resultLaunched) {
+          cls += res.winner === team ? ' winner' : ' loser';
+        } else if (myVote === team) {
+          cls += ' sel';
+        }
+        return cls;
+      };
+
+      const safeQ = s => s ? s.replace(/'/g,"\\'") : '';
+
+      html += `<div class="elim-match${resultLaunched?' winner-set':''}">
+        <div class="elim-match-meta">${m.date}${m.time&&m.time!=='?'?' '+m.time:''} ${m.venue||''}</div>
+        <div class="elim-teams">`;
+
+      html += home
+        ? `<button class="${btnClass(home)}" ${!canVoteThis?'disabled':''} onclick="setElimVote('${m.id}','${safeQ(home)}')"><span class="fl">${F(home)}</span><span class="tn">${home}</span></button>`
+        : `<div class="elim-tbd">A definir</div>`;
+
+      html += `<span class="elim-sep">vs</span>`;
+
+      html += away
+        ? `<button class="${btnClass(away)}" ${!canVoteThis?'disabled':''} onclick="setElimVote('${m.id}','${safeQ(away)}')"><span class="fl">${F(away)}</span><span class="tn">${away}</span></button>`
+        : `<div class="elim-tbd">A definir</div>`;
+
+      html += `</div>`;
+
+      if (home && away) {
+        html += `<div class="elim-vote-partial">
+          <div class="elim-partial-col${homeVoters.length?' hv':''}">${homeVoters.join(', ')||'—'}</div>
+          <div class="elim-partial-col" style="text-align:right;${awayVoters.length?'color:#8B6914':''}">${awayVoters.join(', ')||'—'}</div>
+        </div>`;
+      }
+
+      if (resultLaunched) {
+        html += `<div style="margin-top:5px"><span class="advance-badge">✓ ${res.winner} avançou</span>`;
+        if (isPedro()) html += ` <button class="btn-reopen-game" style="margin-left:6px" onclick="clearElimResult('${m.id}')">🔄 Corrigir</button>`;
+        html += `</div>`;
+      }
+
+      if (isPedro() && home && away && !resultLaunched) {
+        html += `<div style="margin-top:8px;padding-top:8px;border-top:1px solid #1a1a1a">
+          <div style="font-size:9px;color:#8B6914;letter-spacing:1px;margin-bottom:4px">★ ADMIN — Lançar resultado:</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="result-btn" onclick="setElimResult('${m.id}','${safeQ(home)}')">${F(home)} ${home} venceu</button>
+            <button class="result-btn" onclick="setElimResult('${m.id}','${safeQ(away)}')">${F(away)} ${away} venceu</button>
+          </div>
+        </div>`;
+      }
+
+      html += `</div>`;
+    });
+  });
+  return html;
+}
+
+// Aba Especiais (própria aba no topo)
+function renderEspeciaisTab() {
+  const c = document.getElementById('tab-especiais');
+  if (!loaded) { c.innerHTML = '<div class="empty">Carregando...</div>'; return; }
+  let html = `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+    <div class="pname-display">${activeP}</div>
+  </div>`;
+  html += renderSpeciaisHTML();
+  c.innerHTML = html;
+}
+
+function voltarWelcome(){
+  document.getElementById('app').style.display='none';
+  document.getElementById('welcome-app').style.display='block';
+  renderWelcome();
+}
 
 loadState();
 </script>
