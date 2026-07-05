@@ -552,13 +552,30 @@ function logout(){adminUser=null;document.getElementById('admin-bar').style.disp
 
 // ── Firebase ──────────────────────────────────────────────────────────────────
 async function loadState(){
+  // Defaults seguros — nunca sobrescrever com objeto vazio
+  const DEFAULTS={votes:{},results:{},closed:{r1:false,r2:false,r3:false},unlocked:{r1:true,r2:false,r3:false},submitted:{},manualOpen:{},gameReopen:{},specialPicks:{},specialLocked:{},elimResults:{},elimVotes:{}};
+  let d_firebase_ref=null; // referência ao dado bruto do Firebase
   try{
     const res=await fetch(`${FIREBASE_URL}/${DB_KEY}.json`);
     if(res.ok){
       const d=await res.json();
-      if(d) state=Object.assign({votes:{},results:{},closed:{r1:false,r2:false,r3:false},unlocked:{r1:true,r2:false,r3:false},submitted:{},manualOpen:{},gameReopen:{},specialPicks:{},specialLocked:{}},d);
+      // Só aplica se o dado do Firebase é um objeto não-vazio com votes ou results
+      if(d && typeof d==='object' && (d.votes||d.results||d.elimResults||d.submitted)){
+        d_firebase_ref=d;
+        state=Object.assign({},DEFAULTS,d);
+      } else if(d && typeof d==='object' && Object.keys(d).length>0){
+        d_firebase_ref=d;
+        state=Object.assign({},DEFAULTS,d);
+      } else {
+        // Firebase vazio ou null: usar defaults SEM disparar save
+        console.warn('Firebase retornou vazio — usando estado padrão sem salvar');
+        state=Object.assign({},DEFAULTS);
+      }
     }
-  }catch(e){console.warn('Firebase indisponível',e);}
+  }catch(e){
+    console.warn('Firebase indisponível',e);
+    state=Object.assign({},DEFAULTS);
+  }
   if(!state.manualOpen)state.manualOpen={};
   if(!state.gameReopen)state.gameReopen={};
   if(!state.specialPicks)state.specialPicks={};
@@ -582,21 +599,26 @@ async function loadState(){
     });
   });
 
-  // ── Pré-lançar votos e resultado do jogo e03: África do Sul × Canadá ──────
-  const E03_VOTES = {
-    'Pedro':'away','Caio':'away','Rosalves':'away','Alexandre':'away',
-    'Macleiton':'away','Filipi':'away','PH':'away','Neto':'away',
-    'Arruda':'away','Xavier':'away',
-    'Elicom':'home','Matheus':'home','João Antônio':'home',
-    'Luís Eduardo':'draw','João Victor':'draw'
-  };
-  Object.entries(E03_VOTES).forEach(([p,v])=>{
-    if(!state.elimVotes[p])state.elimVotes[p]={};
-    if(!state.elimVotes[p]['e03'])state.elimVotes[p]['e03']=v;
-  });
-  if(!state.elimResults['e03']){
-    state.elimResults['e03']={winner:'Canadá',loser:'África do Sul',outcome:'away'};
-    autoSaved=true;
+  // ── Dados do jogo e03 (África do Sul × Canadá) — só aplica se ainda não existir no Firebase
+  // Esses dados só são inseridos se o Firebase não tiver NENHUM dado de elimVotes/elimResults
+  // (primeira vez que o código roda após atualização). Se já existem dados no Firebase, preserva.
+  const firebaseTemElimDados = d_firebase_ref && d_firebase_ref.elimResults && d_firebase_ref.elimResults['e03'];
+  if(!firebaseTemElimDados){
+    const E03_VOTES = {
+      'Pedro':'away','Caio':'away','Rosalves':'away','Alexandre':'away',
+      'Macleiton':'away','Filipi':'away','PH':'away','Neto':'away',
+      'Arruda':'away','Xavier':'away',
+      'Elicom':'home','Matheus':'home','João Antônio':'home',
+      'Luís Eduardo':'draw','João Victor':'draw'
+    };
+    Object.entries(E03_VOTES).forEach(([p,v])=>{
+      if(!state.elimVotes[p])state.elimVotes[p]={};
+      if(!state.elimVotes[p]['e03'])state.elimVotes[p]['e03']=v;
+    });
+    if(!state.elimResults['e03']){
+      state.elimResults['e03']={winner:'Canadá',loser:'África do Sul',outcome:'away'};
+      autoSaved=true;
+    }
   }
 
   if(autoSaved)save();
