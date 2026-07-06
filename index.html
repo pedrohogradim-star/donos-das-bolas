@@ -519,6 +519,7 @@ const DB_KEY="bolao_donos_v1";
 // specialLocked: {pid: bool} — se o participante já enviou e está travado
 let state={votes:{},results:{},closed:{r1:false,r2:false,r3:false},unlocked:{r1:true,r2:false,r3:false},submitted:{},manualOpen:{},gameReopen:{},specialPicks:{},specialLocked:{}};
 let loaded=false;
+let firebaseCarregou=false; // proteção: só permite save() após Firebase confirmar dados reais
 let adminUser=null;
 let currentUser=null; // usuário selecionado na tela inicial
 
@@ -563,13 +564,16 @@ async function loadState(){
       if(d && typeof d==='object' && (d.votes||d.results||d.elimResults||d.submitted)){
         d_firebase_ref=d;
         state=Object.assign({},DEFAULTS,d);
+        firebaseCarregou=true; // dados reais confirmados — save() liberado
       } else if(d && typeof d==='object' && Object.keys(d).length>0){
         d_firebase_ref=d;
         state=Object.assign({},DEFAULTS,d);
+        firebaseCarregou=true;
       } else {
         // Firebase vazio ou null: usar defaults SEM disparar save
         console.warn('Firebase retornou vazio — usando estado padrão sem salvar');
         state=Object.assign({},DEFAULTS);
+        // firebaseCarregou permanece false — save() bloqueado
       }
     }
   }catch(e){
@@ -599,29 +603,8 @@ async function loadState(){
     });
   });
 
-  // ── Dados do jogo e03 (África do Sul × Canadá) — só aplica se ainda não existir no Firebase
-  // Esses dados só são inseridos se o Firebase não tiver NENHUM dado de elimVotes/elimResults
-  // (primeira vez que o código roda após atualização). Se já existem dados no Firebase, preserva.
-  const firebaseTemElimDados = d_firebase_ref && d_firebase_ref.elimResults && d_firebase_ref.elimResults['e03'];
-  if(!firebaseTemElimDados){
-    const E03_VOTES = {
-      'Pedro':'away','Caio':'away','Rosalves':'away','Alexandre':'away',
-      'Macleiton':'away','Filipi':'away','PH':'away','Neto':'away',
-      'Arruda':'away','Xavier':'away',
-      'Elicom':'home','Matheus':'home','João Antônio':'home',
-      'Luís Eduardo':'draw','João Victor':'draw'
-    };
-    Object.entries(E03_VOTES).forEach(([p,v])=>{
-      if(!state.elimVotes[p])state.elimVotes[p]={};
-      if(!state.elimVotes[p]['e03'])state.elimVotes[p]['e03']=v;
-    });
-    if(!state.elimResults['e03']){
-      state.elimResults['e03']={winner:'Canadá',loser:'África do Sul',outcome:'away'};
-      autoSaved=true;
-    }
-  }
 
-  if(autoSaved)save();
+    if(autoSaved)save();
   document.getElementById('loading').style.display='none';
   // Mostrar tela de seleção de nome
   document.getElementById('welcome-app').style.display='block';
@@ -630,6 +613,12 @@ async function loadState(){
 }
 let saveTimer=null;
 async function save(){
+  // PROTEÇÃO CRÍTICA: nunca salvar se o Firebase não carregou dados reais.
+  // firebaseCarregou só vira true quando loadState recebe um objeto com votes ou results.
+  if(!firebaseCarregou){
+    console.warn('save() bloqueado — Firebase ainda não confirmou dados reais.');
+    return;
+  }
   clearTimeout(saveTimer);
   saveTimer=setTimeout(async()=>{
     try{
